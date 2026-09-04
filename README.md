@@ -52,12 +52,14 @@ docker run -d --name vps-jsq -p 8080:80 ghcr.io/senhao-xu/vps-jsq:latest
 docker pull ghcr.io/senhao-xu/vps-jsq:a1aa3cb
 ```
 
+`docker-compose.yml` 已默认使用 GHCR 镜像，直接启动即可：
+
 ```bash
-# 使用 docker-compose 构建并启动（映射到宿主机 8080 端口）
-docker compose up -d --build
+# 拉取 GHCR 镜像并启动（映射到宿主机 8080 端口）
+docker compose up -d
 ```
 
-或使用 Dockerfile 单独构建运行：
+或使用 Dockerfile 本地构建运行：
 
 ```bash
 docker build -t vps-jsq .
