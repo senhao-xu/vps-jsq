@@ -1050,3 +1050,9 @@ if (document.readyState === 'loading') {
     bindActionButtons();
 }
 
+// 底栏展示构建版本（git 短 sha，由 vite define 注入）
+(() => {
+    const el = document.getElementById('buildSha');
+    if (el) el.textContent = ` | ${typeof __GIT_SHA__ !== 'undefined' ? __GIT_SHA__ : 'dev'}`;
+})();
+

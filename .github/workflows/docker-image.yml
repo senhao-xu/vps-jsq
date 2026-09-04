@@ -1,10 +1,9 @@
 name: Build Docker Image
 
-# 推送到 main 分支 / 打 v* 标签时自动构建镜像并发布到 GHCR
+# 推送到 main 分支时自动构建镜像并发布到 GHCR，版本号使用 commit sha
 on:
   push:
     branches: [main]
-    tags: ['v*']
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -24,6 +23,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Get short SHA
+        id: sha
+        run: echo "short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       # 多架构支持（amd64 常见 VPS，arm64 如 Oracle ARM）
       - name: Set up QEMU
@@ -46,14 +49,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            # main 分支推送 -> latest + main
+            # main 分支推送 -> latest
             type=raw,value=latest,enable={{is_default_branch}}
-            type=ref,event=branch
-            # v1.4.1 标签 -> 1.4.1 + 1.4
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            # 每次构建附带短 commit id
-            type=sha,format=short
+            # 版本号 = 短 commit sha 本体，如 a1aa3cb
+            type=raw,value=${{ steps.sha.outputs.short }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -64,5 +63,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # 注入底栏展示的版本号
+          build-args: |
+            GIT_SHA=${{ steps.sha.outputs.short }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

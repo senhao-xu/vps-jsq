@@ -1,8 +1,8 @@
 这是一个简单美观的 VPS 剩余价值计算器，支持多种货币、自定义汇率，并可以生成精美的分享图片。
 
-![demo](./demo1.webp)
+![demo](./demo1.png)
 
-![demo](./demo2.webp)
+![demo](./demo2.png)
 
 ✨ **特性**：
 - 💰 支持多币种自动汇率转换 (USD, EUR, GBP, JPY 等)
@@ -44,6 +44,12 @@ npx wrangler deploy
 
 ```bash
 docker run -d --name vps-jsq -p 8080:80 ghcr.io/senhao-xu/vps-jsq:latest
+```
+
+镜像以 commit sha 作为版本号（`a1aa3cb`），也可锁定特定版本：
+
+```bash
+docker pull ghcr.io/senhao-xu/vps-jsq:a1aa3cb
 ```
 
 ```bash
