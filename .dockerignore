@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.gitignore
+preview
+demo*.webp
+*.log
+Dockerfile
+docker-compose.yml
+.dockerignore
+README.md
+LICENSE
+wrangler.toml
+.codex-tmp-export.mjs

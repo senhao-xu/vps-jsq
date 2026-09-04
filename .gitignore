@@ -1,0 +1,9 @@
+node_modules
+.wrangler
+.DS_Store
+.trae/
+.playwright-cli/
+dist/
+.vscode/
+preview/
+.codex-tmp-export.mjs

@@ -1,0 +1,8 @@
+services:
+  vps-jsq:
+    build: .
+    image: vps-jsq:latest
+    container_name: vps-jsq
+    ports:
+      - "8080:80"
+    restart: unless-stopped
