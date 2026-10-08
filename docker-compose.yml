@@ -1,7 +1,11 @@
 services:
   vps-jsq:
-    image: ghcr.io/senhao-xu/vps-jsq:latest
+    build:
+      context: .
+      args:
+        GIT_SHA: ${GIT_SHA:-dev}
+    image: vps-jsq:local
     container_name: vps-jsq
     ports:
-      - "8080:80"
+      - "8081:80"
     restart: unless-stopped

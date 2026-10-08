@@ -267,25 +267,27 @@ html.dark .quote-panel .quote-sale-input.sale-neutral {
 
 /* ============ macOS 磨砂玻璃主题 ============ */
 
-/* 浅色底纹：淡雅紫白渐变 */
+/* 浅色底纹：细线网格 */
 html:not(.dark) body {
     background-color: #f6f3fa;
     background-image:
-        radial-gradient(ellipse 110% 85% at 50% 22%, transparent 32%, rgba(246, 243, 250, 0.92) 88%),
-        radial-gradient(52rem 26rem at 50% -12%, rgba(192, 132, 252, 0.08), transparent 62%),
-        linear-gradient(180deg, #faf8fd 0%, #efebf5 100%);
-    background-size: 100% 100%, 100% 100%, 100% 100%;
+        linear-gradient(to right, rgba(100, 116, 139, 0.24) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(100, 116, 139, 0.24) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: 0 0;
+    background-repeat: repeat;
     background-attachment: fixed;
 }
 
-/* 深色底纹：深紫渐变 */
+/* 深色底纹：紫灰细线网格 */
 html.dark body {
     background-color: #0e0a14;
     background-image:
-        radial-gradient(ellipse 110% 85% at 50% 22%, transparent 32%, rgba(14, 10, 20, 0.92) 88%),
-        radial-gradient(52rem 26rem at 50% -12%, rgba(192, 132, 252, 0.05), transparent 62%),
-        linear-gradient(180deg, #171021 0%, #0a0710 100%);
-    background-size: 100% 100%, 100% 100%, 100% 100%;
+        linear-gradient(to right, rgba(168, 139, 202, 0.2) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(168, 139, 202, 0.2) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: 0 0;
+    background-repeat: repeat;
     background-attachment: fixed;
 }
 
@@ -722,52 +724,47 @@ html.dark .date-native-input {
 
 /*
  * 生成图片导出：html-to-image 不支持 backdrop-filter，
- * 导出时关闭模糊并使用与页面一致的渐变底（无斑点），玻璃面板以半透明叠加呈现。
+ * 导出时关闭模糊并使用与页面一致的线条底纹，玻璃面板以半透明叠加呈现。
  */
 #captureRoot.exporting {
     padding: 16px 12px 12px;
     background-color: #f6f3fa;
     background-image:
-        radial-gradient(ellipse 110% 85% at 50% 22%, transparent 32%, rgba(246, 243, 250, 0.92) 88%),
-        radial-gradient(52rem 26rem at 50% -12%, rgba(192, 132, 252, 0.08), transparent 62%),
-        linear-gradient(180deg, #faf8fd 0%, #efebf5 100%);
-    background-size: 100% 100%, 100% 100%, 100% 100%;
-    background-position: 0 0, 0 0, 0 0;
-    background-repeat: no-repeat, no-repeat, no-repeat;
+        linear-gradient(to right, rgba(100, 116, 139, 0.24) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(100, 116, 139, 0.24) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: 0 0;
+    background-repeat: repeat;
 }
 html.dark #captureRoot.exporting {
     background-color: #0e0a14;
     background-image:
-        radial-gradient(ellipse 110% 85% at 50% 22%, transparent 32%, rgba(14, 10, 20, 0.92) 88%),
-        radial-gradient(52rem 26rem at 50% -12%, rgba(192, 132, 252, 0.05), transparent 62%),
-        linear-gradient(180deg, #171021 0%, #0a0710 100%);
-    background-size: 100% 100%, 100% 100%, 100% 100%;
-    background-position: 0 0, 0 0, 0 0;
-    background-repeat: no-repeat, no-repeat, no-repeat;
+        linear-gradient(to right, rgba(168, 139, 202, 0.2) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(168, 139, 202, 0.2) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: 0 0;
+    background-repeat: repeat;
 }
 
 /*
- * Firefox（Gecko）下 html-to-image 序列化多层 linear-gradient 平铺背景会错位，
- * 这里用单张 SVG 网格替代；Safari/Chrome 走上面的 linear-gradient（与编辑态一致）。
+ * Firefox（Gecko）导出时沿用同一套线条背景，避免主题样式覆盖。
  */
 @supports (-moz-appearance: none) {
     #captureRoot.exporting {
         background-image:
-            radial-gradient(ellipse 110% 85% at 50% 22%, transparent 32%, rgba(246, 243, 250, 0.92) 88%),
-            radial-gradient(52rem 26rem at 50% -12%, rgba(192, 132, 252, 0.08), transparent 62%),
-            linear-gradient(180deg, #faf8fd 0%, #efebf5 100%);
-        background-size: 100% 100%, 100% 100%, 100% 100%;
-        background-position: 0 0, 0 0, 0 0;
-        background-repeat: no-repeat, no-repeat, no-repeat;
+            linear-gradient(to right, rgba(100, 116, 139, 0.24) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(100, 116, 139, 0.24) 1px, transparent 1px);
+        background-size: 32px 32px;
+        background-position: 0 0;
+        background-repeat: repeat;
     }
     html.dark #captureRoot.exporting {
         background-image:
-            radial-gradient(ellipse 110% 85% at 50% 22%, transparent 32%, rgba(14, 10, 20, 0.92) 88%),
-            radial-gradient(52rem 26rem at 50% -12%, rgba(192, 132, 252, 0.05), transparent 62%),
-            linear-gradient(180deg, #171021 0%, #0a0710 100%);
-        background-size: 100% 100%, 100% 100%, 100% 100%;
-        background-position: 0 0, 0 0, 0 0;
-        background-repeat: no-repeat, no-repeat, no-repeat;
+            linear-gradient(to right, rgba(168, 139, 202, 0.2) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(168, 139, 202, 0.2) 1px, transparent 1px);
+        background-size: 32px 32px;
+        background-position: 0 0;
+        background-repeat: repeat;
     }
 }
 
