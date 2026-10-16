@@ -16,8 +16,9 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .page-heading > p { margin: 0 0 4px; font-size: 12px; }
     .site-footer { margin-top: 0; padding: 14px 0; }
 
-    /* Each panel follows its contents; viewport height never stretches the fields. */
+    /* Panel heights follow their contents rather than the viewport. */
     #mainCard, .converter-card { grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); gap: 18px; align-items: start; background: none; border: 0; box-shadow: none; border-radius: 0; overflow: visible; }
+    #mainCard { align-items: stretch; }
     #mainCard::before, .converter-card::before { display: none; }
     #mainCard .calculator-inputs, .converter-inputs,
     #mainCard .result-summary, #mainCard .quote-card, .converter-result { border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); }
@@ -35,7 +36,7 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .calculator-source-row { padding-top: 14px; }
 
     #mainCard .calculator-result { padding: 0; background: none; border: 0; gap: 14px; }
-    #mainCard .result-summary { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 0 18px; flex: none; padding: 22px 24px; background: radial-gradient(ellipse at 100% 0, var(--accent-soft), transparent 75%), var(--result-bg); }
+    #mainCard .result-summary { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 0 18px; flex: 1; padding: 22px 24px; background: radial-gradient(ellipse at 100% 0, var(--accent-soft), transparent 75%), var(--result-bg); }
     #mainCard .result-value-panel { display: contents; }
     #mainCard .result-topline { grid-column: 1 / -1; margin-bottom: 16px; }
     .value-caption { display: none; }
