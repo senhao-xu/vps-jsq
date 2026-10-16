@@ -106,14 +106,16 @@
                             </div>
                             <div class="result-divider"></div>
                             <div class="result-days-panel"><div class="days-progress-row"><span class="days-label"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>剩余天数</span><div class="days-count-line"><span id="daysRemaining">0</span><span>天</span></div><span class="progress-label">剩余 <span id="progressText">0%</span></span></div><div class="progress-container"><div id="progressBar" class="progress-fill"></div></div></div>
+                        </div>
+                        <div class="quote-card">
                             <div class="result-divider quote-divider"></div>
                             <div class="quote-panel"><div class="quote-heading"><span>交易报价</span><span>溢价 / 总价自动联动</span></div>
                                 <div class="quote-field"><label class="quote-label" for="premiumInput">溢价 / 折价</label><div class="quote-input-wrap"><span class="quote-prefix">¥</span><input id="premiumInput" class="quote-input quote-premium-input" type="number" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
                                 <div class="quote-field"><label class="quote-label" for="salePriceInput">交易总价</label><div class="quote-input-wrap"><span class="quote-prefix">¥</span><input id="salePriceInput" class="quote-input quote-sale-input" type="number" step="0.01" min="0" placeholder="0.00" inputmode="decimal"></div></div>
                             </div>
+                            <div id="btnContainer" class="calculator-actions"><button id="copyBtn" type="button" class="action-btn action-btn-copy" title="复制 MD 格式详情"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span>复制文本</span></button><button id="imgBtn" type="button" class="action-btn action-btn-image" title="生成分享图片"><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span>生成图片</span></button></div>
+                            <p class="calculator-result-note"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>点击金额即可复制，轻松分享交易报价</p>
                         </div>
-                        <div id="btnContainer" class="calculator-actions"><button id="copyBtn" type="button" class="action-btn action-btn-copy" title="复制 MD 格式详情"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span>复制文本</span></button><button id="imgBtn" type="button" class="action-btn action-btn-image" title="生成分享图片"><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span>生成图片</span></button></div>
-                        <p class="calculator-result-note"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>点击金额即可复制，轻松分享交易报价</p>
                         <div id="toast" role="status" aria-live="polite">已复制到剪贴板</div>
                     </section>
                 </div>
