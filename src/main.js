@@ -1,5 +1,6 @@
 import { enhanceCurrencySelect } from './currency-picker.js';
 import { fetchReferenceRates } from './rate-data.js';
+import { createShareData, preloadShareCard, renderShareCard } from './share-card.js';
 
 // 样式表已改为 index.html 中 <link rel="stylesheet"> 渲染阻塞式加载（见 head 注释），
 // 不再通过 JS 模块注入，避免 CSS 就绪前内容以默认样式绘制造成闪变。
@@ -8,18 +9,6 @@ import { fetchReferenceRates } from './rate-data.js';
 const REFRESH_LIMIT_HOURS = 12;
 // 限制重复的手动请求。
 const MANUAL_REFRESH_LIMIT = 2;
-const SHARE_IMAGE_MIME_TYPE = 'image/webp';
-const SHARE_IMAGE_QUALITY = 0.98;
-// 导出图片的最低像素比与目标物理宽度。手机端 CSS 宽度通常仅 ~360px，
-// 若固定 pixelRatio=2 输出仅 ~720px 会发糊。这里按卡片实际 CSS 宽度动态
-// 计算 pixelRatio，保证输出至少 SHARE_IMAGE_MIN_WIDTH 物理像素宽。
-const SHARE_IMAGE_MIN_PIXEL_RATIO = 2;
-const SHARE_IMAGE_MAX_PIXEL_RATIO = 4;
-// 低内存设备（deviceMemory <= 4GB 或窄屏）限制 pixelRatio，避免导出时内存峰值过高造成卡顿
-// 股眼几乎看不出 3x 与 4x 的区别
-const SHARE_IMAGE_LOW_END_MAX_PIXEL_RATIO = 3;
-const SHARE_IMAGE_MIN_WIDTH = 1440;
-let htmlToImageModulePromise = null;
 let generatedImageUrl = '';
 
 const currencySymbols = {
@@ -60,6 +49,10 @@ const currencyPicker = enhanceCurrencySelect(els.currency);
 let rateLimitTimer = null;
 let remainingValueCNY = 0;
 let quoteLastEdited = 'premium';
+let currentRateReference = null;
+let imageRequestId = 0;
+let imageGenerating = false;
+let imageModalCloseTimer;
 
 function initCalculator() {
     initTheme();
@@ -307,26 +300,6 @@ function getCookie(name) {
     return "";
 }
 
-async function getHtmlToImage() {
-    if (!htmlToImageModulePromise) {
-        htmlToImageModulePromise = import('html-to-image');
-    }
-
-    return htmlToImageModulePromise;
-}
-
-function canvasToBlob(canvas, type, quality) {
-    return new Promise((resolve, reject) => {
-        canvas.toBlob((blob) => {
-            if (blob) {
-                resolve(blob);
-            } else {
-                reject(new Error(`Canvas export failed: ${type}`));
-            }
-        }, type, quality);
-    });
-}
-
 function resetGeneratedImage() {
     if (generatedImageUrl) {
         URL.revokeObjectURL(generatedImageUrl);
@@ -343,163 +316,6 @@ function syncDateDisplay(input) {
     const display = wrapper && wrapper.querySelector('.date-display-value');
     if (!display) return;
     display.textContent = formatDateForDisplay(input.value);
-}
-
-function prepareDateInputsForExport(node) {
-    const restoreTasks = [];
-    const inputs = node.querySelectorAll('input[type="date"]');
-
-    inputs.forEach((input) => {
-        const wrapper = input.parentElement;
-        if (!wrapper) return;
-        const display = wrapper.querySelector('.date-display-value') || document.createElement('span');
-        const hadDisplay = wrapper.contains(display);
-        if (!hadDisplay) {
-            display.className = 'date-display-value text-xs md:text-sm font-medium tabular-nums';
-            wrapper.insertBefore(display, input.nextSibling);
-        }
-        display.classList.add('date-display-export');
-        display.textContent = formatDateForDisplay(input.value);
-        // visibility:hidden 而非 display:none：保留 input 在文档流中的占位高度，
-        // 避免 wrapper 塌陷导致 position:absolute 的 display 层变为 0px 高度。
-        input.style.visibility = 'hidden';
-
-        restoreTasks.push(() => {
-            input.style.visibility = '';
-            display.classList.remove('date-display-export');
-            if (!hadDisplay) display.remove();
-        });
-    });
-
-    return () => {
-        restoreTasks.reverse().forEach((restore) => restore());
-    };
-}
-
-/*
- * html-to-image 序列化时无法可靠保留 -webkit-/-moz-appearance 这类伪元素相关样式，
- * Firefox 截图里 number input 会重新出现上下调节按钮。导出前用 div 替换，导出后还原。
- */
-function prepareNumberInputsForExport(node) {
-    const restoreTasks = [];
-    const inputs = node.querySelectorAll('input[type="number"]');
-
-    inputs.forEach((input) => {
-        const display = document.createElement('div');
-        display.className = input.className;
-        const cs = window.getComputedStyle(input);
-        // 保留输入框的对齐方式（部分 number 框是居中显示的）
-        display.style.display = 'flex';
-        display.style.alignItems = 'center';
-        display.style.justifyContent = cs.textAlign === 'center'
-            ? 'center'
-            : (cs.textAlign === 'right' ? 'flex-end' : 'flex-start');
-        // 保留动态计算的左内边距，防止多字符货币符号（如 NT$）在截图时与数值重叠
-        display.style.paddingLeft = cs.paddingLeft;
-        display.textContent = input.value || input.placeholder || '';
-        input.style.display = 'none';
-        input.parentElement && input.parentElement.insertBefore(display, input);
-
-        restoreTasks.push(() => {
-            input.style.display = '';
-            display.remove();
-        });
-    });
-
-    return () => {
-        restoreTasks.reverse().forEach((restore) => restore());
-    };
-}
-
-/*
- * 用 Canvas 预生成一张卡片投影 PNG 贴到卡片后：html-to-image 渲染的是同一张
- * 位图，不受 Safari 丢弃 box-shadow / 离屏下 filter 不渲染的影响，保证跨端一致。
- */
-function prepareExportShadow(root, mainCard) {
-    const rootRect = root.getBoundingClientRect();
-    const cardRect = mainCard.getBoundingClientRect();
-    const pad = 24;
-    const width = Math.max(1, Math.ceil(cardRect.width) + pad * 2);
-    const height = Math.max(1, Math.ceil(cardRect.height) + pad * 2);
-    const radius = 22;
-    const isDark = document.documentElement.classList.contains('dark');
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext('2d');
-    ctx.save();
-    ctx.shadowColor = isDark ? 'rgba(0, 0, 0, 0.42)' : 'rgba(15, 23, 42, 0.2)';
-    ctx.shadowBlur = 26;
-    ctx.shadowOffsetY = 8;
-    ctx.fillStyle = isDark ? '#18181e' : '#f7f8fa';
-    const x = pad;
-    const y = pad;
-    const rw = cardRect.width;
-    const rh = cardRect.height;
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.arcTo(x + rw, y, x + rw, y + rh, radius);
-    ctx.arcTo(x + rw, y + rh, x, y + rh, radius);
-    ctx.arcTo(x, y + rh, x, y, radius);
-    ctx.arcTo(x, y, x + rw, y, radius);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-
-    const url = canvas.toDataURL('image/png');
-    const shadow = document.createElement('div');
-    shadow.className = 'export-card-shadow';
-    shadow.style.left = `${cardRect.left - rootRect.left - pad}px`;
-    shadow.style.top = `${cardRect.top - rootRect.top - pad}px`;
-    shadow.style.width = `${width}px`;
-    shadow.style.height = `${height}px`;
-    shadow.style.backgroundImage = `url(${url})`;
-    root.insertBefore(shadow, mainCard);
-    return () => { shadow.remove(); };
-}
-
-function prepareQuoteSectionForExport(mainCard) {
-    const premium = parseQuoteValue(els.premiumInput.value);
-    const shouldHideQuote = !Number.isFinite(premium) || premium === 0;
-    mainCard.classList.toggle('quote-export-empty', shouldHideQuote);
-
-    return () => {
-        mainCard.classList.remove('quote-export-empty');
-    };
-}
-
-function prepareSelectInputsForExport(node) {
-    const restoreTasks = [];
-    const selects = node.querySelectorAll('select');
-
-    selects.forEach((select) => {
-        const selectedValue = select.value;
-        const selectedIndex = select.selectedIndex;
-        const optionSnapshots = Array.from(select.options).map((option) => ({
-            defaultSelected: option.defaultSelected,
-            hasSelectedAttr: option.hasAttribute('selected')
-        }));
-
-        Array.from(select.options).forEach((option) => {
-            const isCurrent = option.value === select.value;
-            option.defaultSelected = isCurrent;
-            option.toggleAttribute('selected', isCurrent);
-        });
-
-        restoreTasks.push(() => {
-            Array.from(select.options).forEach((option, index) => {
-                const snapshot = optionSnapshots[index];
-                option.defaultSelected = snapshot.defaultSelected;
-                option.toggleAttribute('selected', snapshot.hasSelectedAttr);
-            });
-            select.value = selectedValue;
-            if (select.value !== selectedValue) select.selectedIndex = selectedIndex;
-        });
-    });
-
-    return () => {
-        restoreTasks.reverse().forEach((restore) => restore());
-    };
 }
 
 function saveInputsToCookie() {
@@ -595,6 +411,7 @@ async function fetchExchangeRate(force = false) {
         const data = await fetchReferenceRates({ force });
         if (base !== els.currency.value) return;
         const rate = 1 / data.rates[base];
+        currentRateReference = { currency: base, rate: Number(rate.toFixed(4)), date: data.date };
         finishRateUpdate(rate, rate.toFixed(4));
         saveInputsToCookie();
     } catch (error) {
@@ -849,8 +666,10 @@ const modal = {
 };
 
 function closeImageModal() {
+    imageRequestId++;
+    clearTimeout(imageModalCloseTimer);
     modal.el.classList.remove('opacity-100');
-    setTimeout(() => {
+    imageModalCloseTimer = setTimeout(() => {
         modal.el.classList.add('hidden');
         modal.img.classList.add('hidden');
         modal.actions.classList.add('hidden');
@@ -865,79 +684,66 @@ modal.el.addEventListener('click', (e) => {
     if (e.target === modal.el) closeImageModal();
 });
 
+function getShareImageData() {
+    calculate();
+    const cycle = Array.from(els.cycles).find(radio => radio.checked);
+    const cycleText = cycle.parentElement.querySelector('.cycle-option').textContent.trim();
+    const sale = parseQuoteValue(els.salePriceInput.value);
+    return createShareData({
+        price: els.price.value.trim() === '' ? 0 : els.price.valueAsNumber,
+        currency: els.currency.value,
+        rate: els.customRate.valueAsNumber,
+        cycleDays: Number(cycle.value),
+        cycleLabel: cycleText.replace(/付$/, ''),
+        tradeDate: els.tradeDate.value,
+        dueDate: els.dueDate.value,
+        remainingValue: remainingValueCNY,
+        salePrice: Number.isFinite(sale) ? sale : undefined,
+        reference: currentRateReference,
+    });
+}
+
 async function generateImage() {
-    console.log('generateImage called');
-    
-    // Show modal immediately to indicate processing
+    if (imageGenerating) return;
+    let data;
+    try {
+        data = getShareImageData();
+    } catch (error) {
+        showToast(error.message);
+        return;
+    }
+    imageGenerating = true;
+    const requestId = ++imageRequestId;
+    const button = document.getElementById('imgBtn');
+    button.disabled = true;
+    clearTimeout(imageModalCloseTimer);
+    modal.img.classList.add('hidden');
+    modal.actions.classList.add('hidden');
+    modal.loading.classList.remove('hidden');
     modal.el.classList.remove('hidden');
-    // Force reflow
     void modal.el.offsetWidth;
     modal.el.classList.add('opacity-100');
-    
-    // Use setTimeout to allow UI to update before heavy lifting
-    setTimeout(async () => {
-        const node = document.getElementById('captureRoot');
-        const mainCard = document.getElementById('mainCard');
-        node.classList.add('exporting');
-        mainCard.classList.add('exporting');
-        const restoreQuoteSection = prepareQuoteSectionForExport(mainCard);
-        const restoreDateInputs = prepareDateInputsForExport(mainCard);
-        const restoreNumberInputs = prepareNumberInputsForExport(mainCard);
-        const restoreSelectInputs = prepareSelectInputsForExport(mainCard);
-        const restoreExportShadow = prepareExportShadow(node, mainCard);
-
-        try {
-            const htmlToImage = await getHtmlToImage();
-            const rect = node.getBoundingClientRect();
-            const cssWidth = Math.max(1, Math.ceil(rect.width));
-            const widthBasedRatio = SHARE_IMAGE_MIN_WIDTH / cssWidth;
-            const isLowEndDevice = (typeof navigator !== 'undefined'
-                && typeof navigator.deviceMemory === 'number'
-                && navigator.deviceMemory > 0
-                && navigator.deviceMemory <= 4)
-                || (typeof window !== 'undefined' && window.innerWidth < 400);
-            const maxRatio = isLowEndDevice
-                ? SHARE_IMAGE_LOW_END_MAX_PIXEL_RATIO
-                : SHARE_IMAGE_MAX_PIXEL_RATIO;
-            // WebKit/Safari 对非整数 pixelRatio 的 box-shadow 与网格平铺渲染不准确，
-            // 会导致导出样式与 Chromium 不一致；这里向上取整为整数，保证跨浏览器一致。
-            const rawRatio = Math.max(SHARE_IMAGE_MIN_PIXEL_RATIO, widthBasedRatio);
-            const pixelRatio = Math.min(maxRatio, Math.ceil(rawRatio));
-            const canvas = await htmlToImage.toCanvas(node, {
-                width: Math.ceil(rect.width),
-                height: Math.ceil(rect.height),
-                pixelRatio,
-                filter: (element) => {
-                    if (!element || !element.id) return true;
-                    return !['themeToggle', 'btnContainer', 'footerWrap', 'headerWrap'].includes(element.id);
-                },
-                style: {
-                    transform: 'scale(1)',
-                }
-            });
-            const blob = await canvasToBlob(canvas, SHARE_IMAGE_MIME_TYPE, SHARE_IMAGE_QUALITY);
-            resetGeneratedImage();
-            generatedImageUrl = URL.createObjectURL(blob);
-
-            console.log('Image generated successfully');
-            modal.loading.classList.add('hidden');
-            modal.img.src = generatedImageUrl;
-            modal.img.classList.remove('hidden');
-            modal.actions.classList.remove('hidden');
-        } catch (e) {
-            console.error('Synchronous error during image generation:', e);
+    try {
+        const blob = await renderShareCard(data);
+        if (requestId !== imageRequestId) return;
+        resetGeneratedImage();
+        generatedImageUrl = URL.createObjectURL(blob);
+        modal.img.src = generatedImageUrl;
+        await modal.img.decode();
+        if (requestId !== imageRequestId) return;
+        modal.loading.classList.add('hidden');
+        modal.img.classList.remove('hidden');
+        modal.actions.classList.remove('hidden');
+    } catch (error) {
+        if (requestId === imageRequestId) {
+            console.error('Share image generation failed:', error);
             closeImageModal();
-            showToast('生成出错');
-        } finally {
-            restoreSelectInputs();
-            restoreNumberInputs();
-            restoreDateInputs();
-            restoreQuoteSection();
-            restoreExportShadow();
-            mainCard.classList.remove('exporting');
-            node.classList.remove('exporting');
+            showToast('生成图片失败，请稍后重试');
         }
-    }, 100);
+    } finally {
+        imageGenerating = false;
+        button.disabled = false;
+    }
 }
 
 // 用 addEventListener 绑定（替代 inline onclick），保持 HTML 与逻辑解耦
@@ -958,7 +764,7 @@ function bindActionButtons() {
         const prefetch = () => {
             imgBtn.removeEventListener('pointerenter', prefetch);
             imgBtn.removeEventListener('focus', prefetch);
-            try { getHtmlToImage(); } catch (_) {}
+            preloadShareCard().catch(() => {});
         };
         imgBtn.addEventListener('pointerenter', prefetch, { once: true });
         imgBtn.addEventListener('focus', prefetch, { once: true });

@@ -132,21 +132,6 @@
 .modal-actions { color: #b7a9c5; font-size: 12px; margin-top: 16px; }
 .modal-actions p { margin: 0; }
 
-/* Export the working calculator as a compact, opaque card. */
-#captureRoot.exporting { padding: 24px; background: var(--background); }
-#mainCard.exporting { transition: none !important; box-shadow: none; z-index: 1; background: var(--surface-raised); }
-#mainCard.exporting .calculator-inputs { background: var(--surface-subtle); }
-#mainCard.exporting .calculator-result { background: var(--result-bg); }
-#mainCard.exporting #btnContainer, #mainCard.exporting .calculator-result-note { display: none; }
-#mainCard.exporting.quote-export-empty .quote-panel, #mainCard.exporting.quote-export-empty .quote-divider { display: none; }
-#mainCard.exporting .calculator-source-row, #mainCard.exporting .section-caption, #mainCard.exporting .calculator-rate-label > span { display: none; }
-#mainCard.exporting .value-caption { display: none; }
-#mainCard.exporting .result-amount-row { margin-top: 20px; }
-#mainCard.exporting .quote-panel { padding-bottom: 0; }
-#mainCard.exporting .cycle-option, #mainCard.exporting .progress-fill { transition: none; }
-.export-card-shadow { position: absolute; z-index: 0; pointer-events: none; background-repeat: no-repeat; background-position: center; background-size: 100% 100%; }
-.date-display-value.date-display-export { display: flex; background: var(--surface-raised); }
-
 @media (max-width: 900px) {
     .calculator-inputs { padding: 25px 23px 20px; }
     .calculator-result { padding: 25px 24px 20px; }
@@ -200,12 +185,6 @@
     .calculation-formula { flex-direction: column; gap: 7px; padding: 14px 8px; margin-top: 16px; text-align: center; font-size: 12px; }
     .calculation-formula p span { margin: 0 3px; }
     .build-version { display: none; }
-    #captureRoot.exporting { padding: 14px; }
-    #mainCard.exporting .calculator-inputs, #mainCard.exporting .calculator-result { padding-left: 18px; padding-right: 18px; }
-    #mainCard.exporting .calculator-rate-control { font-size: 12px; gap: 5px; }
-    #mainCard.exporting .rate-input { width: 88px; font-size: 16px; }
-    #mainCard.exporting .renewal-currency-select select { font-size: 14px; padding-left: 29px; padding-right: 17px; }
-    #mainCard.exporting #priceCNYPreview { display: none; }
 }
 @media (max-width: 370px) {
     .calculator-inputs { padding: 21px 17px 18px; }
