@@ -8,8 +8,8 @@
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
     <title>剩余价值 · VPS 工具箱</title>
-    <link rel="preconnect" href="https://open.er-api.com" crossorigin>
-    <link rel="dns-prefetch" href="https://open.er-api.com">
+    <link rel="preconnect" href="https://latest.currency-api.pages.dev" crossorigin>
+    <link rel="dns-prefetch" href="https://latest.currency-api.pages.dev">
     <link rel="stylesheet" href="/src/style.css">
     <script>
         document.documentElement.dataset.tool = location.pathname.endsWith('/exchange.html') ? 'exchange' : 'value';
@@ -91,7 +91,7 @@
                                 <div class="calculator-rate-label"><label for="customRate">CNY 汇率</label><span>支持手动修改</span></div>
                                 <div class="calculator-rate-control"><span id="rateCurrencyLabel">1 USD =</span><input id="customRate" class="rate-input" type="number" step="0.0001" min="0" inputmode="decimal" placeholder="0.0000" aria-label="兑换人民币汇率"><span>CNY</span></div>
                             </div>
-                            <div class="calculator-source-row"><a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer" class="rate-source-link"><span class="source-dot"></span>ExchangeRate-API<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a><div class="refresh-control"><span id="rateLimitTip" class="rate-limit-tip" role="alert">请勿频繁刷新</span><button id="refreshRateBtn" type="button" class="text-button" aria-label="刷新汇率" title="刷新汇率"><svg id="refreshIcon" class="icon" aria-hidden="true"><use href="#i-refresh"/></svg><span id="apiRateDisplay">汇率刷新</span></button></div></div>
+                            <div class="calculator-source-row"><a href="https://github.com/fawazahmed0/exchange-api" target="_blank" rel="noopener noreferrer" class="rate-source-link"><span class="source-dot"></span>Currency API<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a><div class="refresh-control"><span id="rateLimitTip" class="rate-limit-tip" role="alert">请勿频繁刷新</span><button id="refreshRateBtn" type="button" class="text-button" aria-label="刷新汇率" title="刷新汇率"><svg id="refreshIcon" class="icon" aria-hidden="true"><use href="#i-refresh"/></svg><span id="apiRateDisplay">汇率刷新</span></button></div></div>
                         </form>
                     </section>
 

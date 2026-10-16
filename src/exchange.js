@@ -26,7 +26,7 @@ const els = {
 const cached = getCachedRates();
 let rates = cached?.rates || { CNY: 1 };
 let dataSource = cached ? 'cached' : 'loading';
-let rateTimestamp = cached?.updatedAt || 0;
+let rateDate = cached?.date || '';
 let toastTimer;
 let copiedTimer;
 let lastFetchAttempt = 0;
@@ -104,14 +104,13 @@ function updateSource() {
             ? '正在获取参考汇率，也可填写自定义汇率。'
             : '参考汇率暂不可用，请稍后点击「更新汇率」重试，或填写自定义汇率。';
     } else {
-        const date = new Intl.DateTimeFormat('zh-CN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Shanghai' }).format(new Date(rateTimestamp));
         note.replaceChildren('参考汇率由 ');
         const link = document.createElement('a');
-        link.href = 'https://www.exchangerate-api.com';
-        link.textContent = 'ExchangeRate-API';
+        link.href = 'https://github.com/fawazahmed0/exchange-api';
+        link.textContent = 'Currency API';
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
-        note.append(link, ` 提供 · 数据更新于 ${date}（北京时间）${els.customEnabled.checked ? ' · 当前换算使用自定义汇率' : ''}`);
+        note.append(link, ` 提供 · 数据日期 ${rateDate} · 每日更新${els.customEnabled.checked ? ' · 当前换算使用自定义汇率' : ''}`);
     }
 }
 
@@ -251,7 +250,7 @@ async function refreshRates({ manual = false } = {}) {
         const data = await fetchReferenceRates({ force: manual });
         rates = data.rates;
         dataSource = 'reference';
-        rateTimestamp = data.updatedAt;
+        rateDate = data.date;
         render();
         if (manual) showToast(els.customEnabled.checked ? '参考汇率已更新，当前仍使用自定义汇率' : '参考汇率已更新');
     } catch {
@@ -272,7 +271,7 @@ window.addEventListener('toolbox:change', () => {
     const latest = getCachedRates();
     if (latest && latest.rates !== rates) {
         rates = latest.rates;
-        rateTimestamp = latest.updatedAt;
+        rateDate = latest.date;
         dataSource = 'reference';
         render();
     }

@@ -2,15 +2,18 @@
 @import './currency-picker.css';
 
 :root {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    font-size: 14px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
     color-scheme: light;
     --background: #f7f5fa;
     --surface: rgba(255, 255, 255, 0.88);
     --surface-raised: #fff;
     --surface-subtle: #f6f5f9;
     --text: #282334;
-    --secondary: #777181;
-    --muted: #91899e;
+    --secondary: #5f586b;
+    --muted: #71687d;
     --border: rgba(77, 54, 106, 0.13);
     --accent: #9254db;
     --accent-strong: #8344d0;
@@ -30,8 +33,8 @@ html.dark {
     --surface-raised: #25212e;
     --surface-subtle: #211c2b;
     --text: #efeaf7;
-    --secondary: #a59aae;
-    --muted: #7f748e;
+    --secondary: #c0b6cc;
+    --muted: #a89bb9;
     --border: rgba(204, 179, 235, 0.12);
     --accent: #bb90f0;
     --accent-strong: #cfb0f9;
@@ -43,7 +46,7 @@ html.dark {
     --shadow: 0 24px 70px -35px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(226, 205, 255, 0.025) inset;
 }
 * { box-sizing: border-box; }
-html body.toolbox-page { font-family: inherit; line-height: normal; color: var(--text); margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(ellipse at 52% 26%, var(--accent-soft), transparent 63%), linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: auto, 36px 36px, 36px 36px; }
+html body.toolbox-page { font-family: inherit; font-size: 14px; font-weight: 400; line-height: 1.6; color: var(--text); margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(ellipse at 52% 26%, var(--accent-soft), transparent 63%), linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: auto, 36px 36px, 36px 36px; }
 button, input, select { font: inherit; }
 button, a, input, select { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
@@ -62,12 +65,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .page-shell { max-width: 1032px; padding: 0 32px; margin: 0 auto; }
 .site-header { height: 95px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--border); }
-.brand { display: inline-flex; align-items: center; gap: 11px; font-size: 15px; font-weight: 650; letter-spacing: 0.3px; }
-.brand-light { font-weight: 450; }
+.brand { display: inline-flex; align-items: center; gap: 11px; font-size: 15px; font-weight: 600; letter-spacing: 0.3px; }
+.brand-light { font-weight: 500; }
 .brand-mark { display: grid; place-items: center; width: 33px; height: 33px; background: var(--accent-soft); border: 1px solid var(--border); border-radius: 10px; color: var(--accent); }
 .brand-mark .icon { width: 19px; height: 19px; }
 .tool-nav { display: flex; align-items: center; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-right: 100px; }
-.tool-nav a { padding: 8px 24px; font-size: 13px; color: var(--secondary); border-radius: 7px; transition: color 150ms, background 150ms; }
+.tool-nav a { padding: 8px 24px; font-size: 13px; color: var(--secondary); border-radius: 7px; transition: color 150ms, background 150ms; font-weight: 500; }
 .tool-nav a:hover { color: var(--text); }
 .tool-nav a.active { background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
 .icon-button { width: 34px; height: 34px; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--secondary); }
@@ -75,29 +78,29 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .theme-sun, html.dark .theme-moon { display: none; }
 html.dark .theme-sun { display: block; }
 .page-heading { padding: 46px 0 29px; }
-.eyebrow { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: 2.2px; margin-bottom: 12px; }
+.eyebrow { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: 2.2px; margin-bottom: 12px; }
 .eyebrow > span { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
 .heading-line { display: flex; align-items: center; gap: 15px; }
-h1 { margin: 0; font-size: 34px; font-weight: 650; letter-spacing: 1px; line-height: 1.35; }
+h1 { margin: 0; font-size: 34px; font-weight: 600; letter-spacing: 1px; line-height: 1.35; }
 .heading-dot { color: var(--accent); margin-left: 3px; }
-.page-heading > p { font-size: 13px; letter-spacing: 0.4px; color: var(--secondary); margin: 10px 0 0; }
+.page-heading > p { font-size: 14px; letter-spacing: 0.4px; color: var(--secondary); margin: 10px 0 0; }
 
 /* Shared form, result, and footer elements. */
 .section-label { display: flex; gap: 8px; align-items: center; margin-bottom: 25px; }
 .section-label > .icon { color: var(--accent); width: 16px; height: 16px; }
-.section-label h2 { margin: 0; font-size: 14px; font-weight: 600; }
-.section-caption { margin-left: auto; color: var(--muted); font-size: 11px; }
-.field-label { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--secondary); margin-bottom: 10px; }
-.field-label > span { color: var(--muted); font-size: 9px; letter-spacing: 1px; }
-.result-topline { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--secondary); }
-.result-currency-badge { font-size: 9px; padding: 5px 8px; border-radius: 5px; border: 1px solid var(--border); color: var(--accent); background: var(--accent-soft); }
+.section-label h2 { margin: 0; font-size: 16px; font-weight: 600; }
+.section-caption { margin-left: auto; color: var(--muted); font-size: 12px; }
+.field-label { display: flex; align-items: center; justify-content: space-between; font-size: 14px; color: var(--secondary); margin-bottom: 10px; font-weight: 500; }
+.field-label > span { color: var(--muted); font-size: 12px; letter-spacing: 1px; }
+.result-topline { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; color: var(--secondary); }
+.result-currency-badge { display: inline-flex; align-items: center; flex: 0 0 auto; white-space: nowrap; font-size: 12px; line-height: 1.4; padding: 5px 8px; border-radius: 5px; border: 1px solid var(--border); color: var(--accent); background: var(--accent-soft); }
 .subsection-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.subsection-heading h2 { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 500; margin: 0; color: var(--secondary); }
+.subsection-heading h2 { display: flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 500; margin: 0; color: var(--secondary); }
 .subsection-heading h2 .icon { width: 14px; height: 14px; color: var(--muted); }
-.subsection-heading > span { font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.rate-note { margin: 14px 0 0; color: var(--muted); font-size: 10px; line-height: 1.8; text-align: center; }
+.subsection-heading > span { font-size: 12px; color: var(--muted); font-variant-numeric: lining-nums tabular-nums; }
+.rate-note { margin: 14px 0 0; color: var(--muted); font-size: 12px; line-height: 1.7; text-align: center; }
 .rate-note a { text-decoration: underline; text-underline-offset: 3px; }
-.site-footer { margin-top: 27px; padding: 20px 0 25px; display: flex; justify-content: space-between; border-top: 1px solid var(--border); color: var(--muted); font-size: 10px; }
+.site-footer { margin-top: 27px; padding: 20px 0 25px; display: flex; justify-content: space-between; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; line-height: 1.7; }
 .site-footer a { display: flex; align-items: center; gap: 6px; }
 .site-footer a:hover { color: var(--accent); }
 .site-footer .icon { width: 12px; height: 12px; }
@@ -115,20 +118,20 @@ h1 { margin: 0; font-size: 34px; font-weight: 650; letter-spacing: 1px; line-hei
     .brand-mark { height: 28px; width: 28px; border-radius: 8px; }
     .brand-mark .icon { width: 17px; height: 17px; }
     .tool-nav { margin: 0 0 0 auto; gap: 2px; padding: 3px; border-radius: 8px; }
-    .tool-nav a { padding: 7px 10px; font-size: 11px; border-radius: 5px; }
+    .tool-nav a { padding: 7px 10px; font-size: 13px; border-radius: 5px; font-weight: 500; }
     .icon-button { width: 29px; height: 29px; border-radius: 8px; }
     .icon-button .icon { width: 15px; height: 15px; }
     .page-heading { padding: 31px 0 23px; }
-    .eyebrow { font-size: 8px; letter-spacing: 1.6px; margin-bottom: 10px; }
+    .eyebrow { font-size: 12px; letter-spacing: 1.6px; margin-bottom: 10px; }
     h1 { font-size: 28px; }
-    .page-heading > p { font-size: 12px; margin-top: 8px; }
-    .rate-note { font-size: 9px; padding: 0 5px; }
-    .site-footer { margin-top: 23px; font-size: 9px; }
+    .page-heading > p { font-size: 14px; margin-top: 8px; }
+    .rate-note { font-size: 12px; padding: 0 5px; line-height: 1.7; }
+    .site-footer { margin-top: 23px; font-size: 12px; line-height: 1.7; }
 }
 @media (max-width: 370px) {
     .page-shell { padding: 0 12px; }
     .site-header { gap: 7px; }
     .brand { font-size: 12px; }
-    .tool-nav a { padding: 7px; }
+    .tool-nav a { padding: 7px; font-weight: 500; font-size: 13px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

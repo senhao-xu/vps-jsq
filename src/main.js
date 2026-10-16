@@ -4,9 +4,9 @@ import { fetchReferenceRates } from './rate-data.js';
 // 样式表已改为 index.html 中 <link rel="stylesheet"> 渲染阻塞式加载（见 head 注释），
 // 不再通过 JS 模块注入，避免 CSS 就绪前内容以默认样式绘制造成闪变。
 
-// 汇率本地缓存时长（小时）。免费 API 一般每天更新一次，12h 足够。
-const RATE_CACHE_HOURS = 12;
-// 用户手动刷新汇率次数上限（每 RATE_CACHE_HOURS 内）。防止误触刷爆免费 API 配额。
+// 手动刷新次数的统计窗口（小时）；参考汇率每日更新。
+const REFRESH_LIMIT_HOURS = 12;
+// 限制重复的手动请求。
 const MANUAL_REFRESH_LIMIT = 2;
 const SHARE_IMAGE_MIME_TYPE = 'image/webp';
 const SHARE_IMAGE_QUALITY = 0.98;
@@ -509,6 +509,7 @@ function saveInputsToCookie() {
         cycle: Array.from(els.cycles).find(r => r.checked)?.value || "365",
         dueDate: els.dueDate.value,
         customRate: els.customRate.value,
+        referenceProvider: 'currency-api',
         premium: els.premiumInput.value,
         salePrice: els.salePriceInput.value,
         quoteLastEdited
@@ -524,7 +525,8 @@ function loadInputsFromCookie() {
             if(data.price) els.price.value = data.price;
             if(data.currency) els.currency.value = data.currency;
             if(data.dueDate) els.dueDate.value = data.dueDate;
-            if(data.customRate) els.customRate.value = data.customRate;
+            // Ignore saved automatic rates from the previous provider.
+            if (data.referenceProvider === 'currency-api' && data.customRate) els.customRate.value = data.customRate;
             if(data.quoteLastEdited === 'sale' || data.quoteLastEdited === 'premium') {
                 quoteLastEdited = data.quoteLastEdited;
                 if (quoteLastEdited === 'sale' && data.salePrice) {
@@ -549,19 +551,7 @@ async function initRates() {
         return;
     }
 
-    const cacheKey = `vps_rate_${base}`;
-    const cachedData = getCookie(cacheKey);
-
-    if (cachedData) {
-        try {
-            const data = JSON.parse(cachedData);
-            finishRateUpdate(data.rate, data.rate.toFixed(4));
-        } catch (e) {
-            manualRefreshRate(false);
-        }
-    } else {
-        manualRefreshRate(false);
-    }
+    await manualRefreshRate(false);
 }
 
 async function manualRefreshRate(isUserClick = true) {
@@ -570,7 +560,7 @@ async function manualRefreshRate(isUserClick = true) {
 
     const limitKey = "vps_refresh_limit";
     const rawLimit = getCookie(limitKey);
-    let limitData = { count: 0, resetTime: Date.now() + 12*3600*1000 };
+    let limitData = { count: 0, resetTime: Date.now() + REFRESH_LIMIT_HOURS*3600*1000 };
 
     if (rawLimit) {
         try {
@@ -578,7 +568,7 @@ async function manualRefreshRate(isUserClick = true) {
             if (parsed.resetTime && Date.now() < parsed.resetTime) {
                 limitData = parsed;
             } else {
-                limitData = { count: 0, resetTime: Date.now() + RATE_CACHE_HOURS*3600*1000 };
+                limitData = { count: 0, resetTime: Date.now() + REFRESH_LIMIT_HOURS*3600*1000 };
             }
         } catch(e) {}
     }
@@ -606,8 +596,6 @@ async function fetchExchangeRate(force = false) {
         if (base !== els.currency.value) return;
         const rate = 1 / data.rates[base];
         finishRateUpdate(rate, rate.toFixed(4));
-        const cacheData = JSON.stringify({ rate, time: Date.now() });
-        setCookie(`vps_rate_${base}`, cacheData, RATE_CACHE_HOURS);
         saveInputsToCookie();
     } catch (error) {
         console.error(error);

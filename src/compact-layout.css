@@ -11,7 +11,7 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .tool-nav { margin-right: 0; }
     .tool-nav a { transition: color 100ms; }
     .tool-view .page-heading { padding: 0 0 24px; display: grid; grid-template-columns: 1fr auto; align-items: end; }
-    .eyebrow { grid-column: 1 / -1; font-size: 9px; margin-bottom: 7px; }
+    .eyebrow { grid-column: 1 / -1; font-size: 12px; margin-bottom: 7px; }
     h1 { font-size: 32px; line-height: 1.25; }
     .page-heading > p { margin: 0 0 4px; font-size: 12px; }
     .site-footer { margin-top: 0; padding: 14px 0; }
@@ -23,9 +23,9 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     #mainCard:not(.exporting) .result-summary, #mainCard:not(.exporting) .quote-card, .converter-result { border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); }
     .calculator-inputs, .converter-inputs { padding: 24px; background: var(--surface); }
     .section-label { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-    .section-label h2 { font-size: 14px; }
+    .section-label h2 { font-size: 16px; }
     #calcForm { display: block; }
-    .field-label, .field-label-row { margin-bottom: 8px; font-size: 12px; }
+    .field-label, .field-label-row { margin-bottom: 8px; font-size: 14px; }
     .calc-control { height: 48px; }
     .renewal-price-input { font-size: 25px; }
     .cycle-fieldset { margin: 20px 0; }
@@ -44,17 +44,17 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     #finalValue.final-value-long { font-size: 36px; }
     #finalValue.final-value-very-long { font-size: 26px; }
     #mainCard:not(.exporting) .amount-copy-row { grid-column: 1; grid-row: 3; margin-top: 4px; }
-    #mainCard:not(.exporting) .total-value-row { grid-column: 1 / -1; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 11px; }
+    #mainCard:not(.exporting) .total-value-row { grid-column: 1 / -1; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12px; }
     #mainCard:not(.exporting) .result-divider { display: none; }
     #mainCard:not(.exporting) .result-days-panel { grid-column: 2; grid-row: 2 / 4; align-self: center; padding-left: 18px; border-left: 1px solid var(--border); }
     #mainCard:not(.exporting) .days-progress-row { flex-wrap: wrap; gap: 6px; }
-    #mainCard:not(.exporting) .days-label { width: 100%; font-size: 10px; }
+    #mainCard:not(.exporting) .days-label { width: 100%; font-size: 12px; }
     #mainCard:not(.exporting) #daysRemaining { font-size: 25px; }
-    #mainCard:not(.exporting) .progress-label { font-size: 9px; }
+    #mainCard:not(.exporting) .progress-label { font-size: 12px; }
     .progress-container { margin-top: 8px; }
     #mainCard:not(.exporting) .quote-card { padding: 20px 24px; background: var(--surface); }
     .quote-panel { gap: 10px; padding-bottom: 16px; }
-    .quote-heading { margin-bottom: 4px; font-size: 12px; }
+    .quote-heading { margin-bottom: 4px; font-size: 14px; }
     .quote-label { margin-bottom: 7px; }
     .quote-input { height: 40px; }
     .calculator-actions { margin-top: 0; }
@@ -65,7 +65,7 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .calculator-guide article { padding: 0 18px; align-items: center; border: 0; border-radius: 0; background: none; }
     .calculator-guide article:first-child { padding-left: 0; }
     .calculator-guide article + article { border-left: 1px solid var(--border); }
-    .calculator-guide h2 { margin: 0 0 4px; font-size: 11px; }
+    .calculator-guide h2 { margin: 0 0 4px; font-size: 12px; }
     .calculator-guide p { line-height: 1.5; }
     .guide-icon { width: 28px; height: 28px; }
     .calculation-formula { margin-top: 0; padding: 6px 4px 0; border: 0; border-radius: 0; justify-content: space-between; }
@@ -90,12 +90,12 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .subsection-heading { margin-bottom: 10px; }
     .popular-currencies { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .popular-pair { padding: 11px 12px; gap: 8px; flex-direction: row; align-items: center; justify-content: space-between; }
-    .pair-heading { gap: 5px; font-size: 10px; }
+    .pair-heading { gap: 5px; font-size: 12px; }
     .pair-flag { font-size: 15px; }
     .pair-value { font-size: 16px; letter-spacing: 0; white-space: nowrap; }
     .pair-value > small { display: none; }
     .reference-table th { padding: 11px 8px; }
-    .reference-table td { padding: 12px 8px; font-size: 11px; }
+    .reference-table td { padding: 12px 8px; font-size: 13px; }
     .rate-note { margin-top: 12px; line-height: 1.6; }
 }
 
@@ -127,14 +127,14 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .pair-flag { display: none; }
     .pair-value { font-size: 14px; }
     .reference-table th { padding-top: 8px; padding-bottom: 8px; }
-    .reference-table td { padding-top: 9px; padding-bottom: 9px; }
+    .reference-table td { padding-top: 9px; padding-bottom: 9px; font-size: 13px; }
 }
 
 @media (min-width: 901px) and (max-width: 1100px) {
     #mainCard:not(.exporting), .converter-card { gap: 14px; }
     #mainCard:not(.exporting) .result-summary { grid-template-columns: minmax(0, 1fr) 104px; gap: 0 12px; }
     #mainCard:not(.exporting) .result-days-panel { padding-left: 12px; }
-    #mainCard:not(.exporting) .days-label { font-size: 9px; }
+    #mainCard:not(.exporting) .days-label { font-size: 12px; }
     #mainCard:not(.exporting) .progress-label { width: 100%; margin: 0; }
     .exchange-overview { gap: 14px; }
     .pair-heading { gap: 3px; }
