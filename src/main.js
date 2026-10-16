@@ -3,11 +3,6 @@ import { enhanceCurrencySelect } from './currency-picker.js';
 // 样式表已改为 index.html 中 <link rel="stylesheet"> 渲染阻塞式加载（见 head 注释），
 // 不再通过 JS 模块注入，避免 CSS 就绪前内容以默认样式绘制造成闪变。
 
-// Firefox 检测：为 html 添加标识类，供 CSS 针对性处理原生控件差异
-if (typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent)) {
-    document.documentElement.classList.add('is-firefox');
-}
-
 const API_URL = 'https://open.er-api.com/v6/latest/CNY';
 // 汇率本地缓存时长（小时）。免费 API 一般每天更新一次，12h 足够。
 const RATE_CACHE_HOURS = 12;
@@ -152,43 +147,16 @@ function setupEventListeners() {
         });
     });
 
-    // Firefox：date input 改为 visibility:hidden，不接收点击 → 在 wrapper 上绑定点击来触发 showPicker()
-    // 非 Firefox：原生透明日历指示器在 webkit 上会自己响应点击，同时下面的 icon handler 作为后备
-    if (document.documentElement.classList.contains('is-firefox')) {
-        document.querySelectorAll('.date-input-wrapper').forEach((wrapper) => {
-            wrapper.addEventListener('click', () => {
-                const input = wrapper.querySelector('input[type="date"]');
-                if (!input) return;
-                try {
-                    if (typeof input.showPicker === 'function') {
-                        input.showPicker();
-                    } else {
-                        input.focus();
-                    }
-                } catch (err) {
-                    // ignore
-                }
-            });
+    // Keep the text area editable; only the calendar button opens the picker.
+    document.querySelectorAll('.date-input-wrapper .date-input-icon').forEach((button) => {
+        button.addEventListener('click', () => {
+            const input = button.parentElement.querySelector('input[type="date"]');
+            input.focus();
+            try {
+                input.showPicker?.();
+            } catch { /* Keep keyboard editing available when the picker is unsupported. */ }
         });
-    } else {
-        // 非 Firefox：点击右侧自定义日历图标触发 picker
-        document.querySelectorAll('.date-input-wrapper .date-input-icon').forEach((icon) => {
-            icon.addEventListener('click', (e) => {
-                const input = icon.parentElement && icon.parentElement.querySelector('input[type="date"]');
-                if (!input) return;
-                e.preventDefault();
-                try {
-                    if (typeof input.showPicker === 'function') {
-                        input.showPicker();
-                    } else {
-                        input.focus();
-                    }
-                } catch (err) {
-                    input.focus();
-                }
-            });
-        });
-    }
+    });
 
     // 价格 / 汇率 输入校验：负数或非法时高亮红边
     [els.price, els.customRate].forEach(el => {

@@ -28,12 +28,13 @@
 .cycle-option:hover { border-color: var(--accent); }
 .cycle-radio:checked + .cycle-option { color: var(--accent-strong); background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
 .cycle-radio:focus-visible + .cycle-option { outline: 2px solid var(--accent); outline-offset: 3px; }
-.date-input-wrapper { position: relative; cursor: pointer; }
-.date-native-input { width: 100%; height: 46px; opacity: 0; position: relative; z-index: 2; cursor: pointer; padding: 0; border: 0; }
-.date-native-input::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; margin: 0; cursor: pointer; }
-.date-display-value { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-raised); color: var(--text); padding: 0 35px 0 13px; white-space: nowrap; font-size: 12px; font-variant-numeric: tabular-nums; pointer-events: none; }
-.date-input-wrapper:focus-within .date-display-value { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-.date-input-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); z-index: 3; display: flex; align-items: center; color: var(--muted); }
+.date-input-wrapper { position: relative; }
+.date-native-input { width: 100%; height: 46px; position: relative; z-index: 2; cursor: text; padding: 0 35px 0 13px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-raised); color: var(--text); font-size: 12px; font-variant-numeric: tabular-nums; }
+.date-native-input::-webkit-calendar-picker-indicator { position: absolute; right: 0; top: 0; width: 35px; height: 100%; padding: 0; margin: 0; opacity: 0; cursor: pointer; }
+.date-display-value { position: absolute; inset: 0; z-index: 1; display: none; align-items: center; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-raised); color: var(--text); padding: 0 35px 0 13px; white-space: nowrap; font-size: 12px; font-variant-numeric: tabular-nums; pointer-events: none; }
+.date-input-wrapper:focus-within .date-native-input { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.date-input-icon { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); z-index: 3; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border-radius: 5px; background: transparent; color: var(--muted); }
+.date-input-icon:hover { color: var(--accent); background: var(--accent-soft); }
 .date-input-icon .icon { width: 15px; height: 15px; }
 .calculator-rate-section { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 20px 0; margin-top: 24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .calculator-rate-label { display: flex; flex-direction: column; gap: 6px; }
@@ -146,7 +147,7 @@
 #mainCard.exporting .quote-panel { padding-bottom: 0; }
 #mainCard.exporting .cycle-option, #mainCard.exporting .progress-fill { transition: none; }
 .export-card-shadow { position: absolute; z-index: 0; pointer-events: none; background-repeat: no-repeat; background-position: center; background-size: 100% 100%; }
-.date-display-value.date-display-export { background: var(--surface-raised); }
+.date-display-value.date-display-export { display: flex; background: var(--surface-raised); }
 
 @media (max-width: 900px) {
     .calculator-inputs { padding: 25px 23px 20px; }
@@ -157,8 +158,8 @@
     .renewal-currency-select > .icon:first-child { width: 15px; height: 15px; left: 10px; }
     .cycle-options { gap: 5px; }
     .cycle-option { font-size: 10px; }
-    .date-display-value { padding-left: 10px; padding-right: 28px; font-size: 11px; }
-    .date-input-icon { right: 9px; }
+    .date-native-input, .date-display-value { padding-left: 10px; padding-right: 30px; font-size: 11px; }
+    .date-input-icon { right: 4px; width: 25px; }
     .date-input-icon .icon { width: 13px; height: 13px; }
     #priceCNYPreview { font-size: 8px; }
     .calculator-rate-control { gap: 5px; font-size: 9px; }
