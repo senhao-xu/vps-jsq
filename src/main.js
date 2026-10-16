@@ -1,3 +1,5 @@
+import { enhanceCurrencySelect } from './currency-picker.js';
+
 // 样式表已改为 index.html 中 <link rel="stylesheet"> 渲染阻塞式加载（见 head 注释），
 // 不再通过 JS 模块注入，避免 CSS 就绪前内容以默认样式绘制造成闪变。
 
@@ -57,6 +59,8 @@ const els = {
     themeToggle: document.getElementById('themeToggle'),
     rateCurrencyLabel: document.getElementById('rateCurrencyLabel')
 };
+
+const currencyPicker = enhanceCurrencySelect(els.currency);
 
 let rateLimitTimer = null;
 let remainingValueCNY = 0;
@@ -745,6 +749,7 @@ function formatDate(date) {
 }
 
 function updateCurrencySymbol() {
+    currencyPicker.sync();
     const code = els.currency.value;
     const sym = currencySymbols[code] || code;
     els.symbolDisplay.textContent = sym;

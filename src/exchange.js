@@ -1,3 +1,5 @@
+import { enhanceCurrencySelect } from './currency-picker.js';
+
 const currencies = {
     USD: { name: '美元', english: 'US Dollar', symbol: '$', flag: '🇺🇸' },
     CNY: { name: '人民币', english: 'Chinese Yuan', symbol: '¥', flag: '🇨🇳' },
@@ -55,6 +57,8 @@ for (const [code, currency] of Object.entries(currencies)) {
 }
 els.from.value = 'USD';
 els.to.value = 'CNY';
+
+const currencyPickers = [els.from, els.to].map(enhanceCurrencySelect);
 
 // Keep these controls in place while amounts change so keyboard focus is preserved.
 const popularButtons = new Map(popularCodes.map((code) => {
@@ -126,6 +130,7 @@ function updateSource() {
 }
 
 function render() {
+    currencyPickers.forEach(picker => picker.sync());
     const from = els.from.value;
     const to = els.to.value;
     const rate = currentRate();
