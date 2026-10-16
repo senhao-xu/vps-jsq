@@ -36,7 +36,7 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .calculator-source-row { padding-top: 14px; }
 
     #mainCard .calculator-result { padding: 0; background: none; border: 0; gap: 14px; }
-    #mainCard .result-summary { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 0 18px; flex: 1; padding: 22px 24px; background: radial-gradient(ellipse at 100% 0, var(--accent-soft), transparent 75%), var(--result-bg); }
+    #mainCard .result-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; flex: 1; padding: 22px 24px; background: radial-gradient(ellipse at 100% 0, var(--accent-soft), transparent 75%), var(--result-bg); }
     #mainCard .result-value-panel { display: contents; }
     #mainCard .result-topline { grid-column: 1 / -1; margin-bottom: 16px; }
     .value-caption { display: none; }
@@ -133,7 +133,7 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
 
 @media (min-width: 901px) and (max-width: 1100px) {
     #mainCard, .converter-card { gap: 14px; }
-    #mainCard .result-summary { grid-template-columns: minmax(0, 1fr) 104px; gap: 0 12px; }
+    #mainCard .result-summary { gap: 0 12px; }
     #mainCard .result-days-panel { padding-left: 12px; }
     #mainCard .days-label { font-size: 12px; }
     #mainCard .progress-label { width: 100%; margin: 0; }
