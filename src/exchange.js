@@ -1,4 +1,5 @@
 import { enhanceCurrencySelect } from './currency-picker.js';
+import { fetchReferenceRates, getCachedRates } from './rate-data.js';
 
 const currencies = {
     USD: { name: '美元', english: 'US Dollar', symbol: '$', flag: '🇺🇸' },
@@ -16,36 +17,21 @@ const currencies = {
 
 const popularCodes = ['USD', 'EUR', 'HKD', 'JPY'];
 const referenceAmounts = [10, 50, 100, 500, 1000];
-const cacheKey = 'vps_exchange_rates_v1';
-const cacheDuration = 12 * 60 * 60 * 1000;
 const byId = (id) => document.getElementById(id);
 const els = {
     amount: byId('exchangeAmount'), from: byId('fromCurrency'), to: byId('toCurrency'),
     customEnabled: byId('customRateEnabled'), custom: byId('exchangeCustomRate'),
     result: byId('exchangeResult'), refresh: byId('refreshExchangeRates'), copy: byId('copyExchangeResult'),
 };
-let rates = { CNY: 1 };
-let dataSource = 'loading';
-let rateTimestamp = 0;
+const cached = getCachedRates();
+let rates = cached?.rates || { CNY: 1 };
+let dataSource = cached ? 'cached' : 'loading';
+let rateTimestamp = cached?.updatedAt || 0;
 let toastTimer;
 let copiedTimer;
 let lastFetchAttempt = 0;
 let rateRequestPending = false;
 
-function validRates(value) {
-    return value && value.CNY === 1 && Object.keys(currencies).every((code) => Number.isFinite(value[code]) && value[code] > 0);
-}
-
-try {
-    const cached = JSON.parse(localStorage.getItem(cacheKey));
-    if (cached && validRates(cached.rates) && Number.isFinite(cached.savedAt)
-        && Number.isFinite(cached.updatedAt) && cached.updatedAt > 0
-        && Date.now() - cached.savedAt >= 0 && Date.now() - cached.savedAt < cacheDuration) {
-        rates = cached.rates;
-        dataSource = 'cached';
-        rateTimestamp = cached.updatedAt;
-    }
-} catch { /* Conversion remains available when local storage is blocked. */ }
 
 for (const [code, currency] of Object.entries(currencies)) {
     for (const select of [els.from, els.to]) {
@@ -220,16 +206,6 @@ byId('swapCurrencies').addEventListener('click', () => {
     render();
 });
 
-byId('exchangeThemeToggle').addEventListener('click', () => {
-    const isDark = document.documentElement.classList.toggle('dark');
-    try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch {}
-    updateThemeLabel();
-});
-
-function updateThemeLabel() {
-    byId('exchangeThemeToggle').setAttribute('aria-label', document.documentElement.classList.contains('dark') ? '切换到浅色模式' : '切换到深色模式');
-}
-
 els.copy.addEventListener('click', async () => {
     const amount = currentAmount();
     const rate = currentRate();
@@ -271,18 +247,11 @@ async function refreshRates({ manual = false } = {}) {
     els.refresh.disabled = true;
     els.refresh.classList.add('loading');
     els.refresh.querySelector('span').textContent = '更新中';
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
     try {
-        const response = await fetch('https://open.er-api.com/v6/latest/CNY', { signal: controller.signal });
-        if (!response.ok) throw new Error('Rate request failed');
-        const data = await response.json();
-        if (data.result !== 'success' || data.base_code !== 'CNY' || !validRates(data.rates)
-            || !Number.isFinite(data.time_last_update_unix) || data.time_last_update_unix <= 0) throw new Error('Invalid rate response');
+        const data = await fetchReferenceRates({ force: manual });
         rates = data.rates;
         dataSource = 'reference';
-        rateTimestamp = data.time_last_update_unix * 1000;
-        try { localStorage.setItem(cacheKey, JSON.stringify({ rates, updatedAt: rateTimestamp, savedAt: Date.now() })); } catch {}
+        rateTimestamp = data.updatedAt;
         render();
         if (manual) showToast(els.customEnabled.checked ? '参考汇率已更新，当前仍使用自定义汇率' : '参考汇率已更新');
     } catch {
@@ -290,7 +259,6 @@ async function refreshRates({ manual = false } = {}) {
         render();
         showToast(dataSource === 'unavailable' ? '获取汇率失败，可填写自定义汇率或稍后重试' : '更新失败，已保留上次参考汇率');
     } finally {
-        clearTimeout(timeout);
         rateRequestPending = false;
         els.refresh.disabled = false;
         els.refresh.classList.remove('loading');
@@ -300,6 +268,15 @@ async function refreshRates({ manual = false } = {}) {
 
 els.refresh.addEventListener('click', () => refreshRates({ manual: true }));
 
-updateThemeLabel();
+window.addEventListener('toolbox:change', () => {
+    const latest = getCachedRates();
+    if (latest && latest.rates !== rates) {
+        rates = latest.rates;
+        rateTimestamp = latest.updatedAt;
+        dataSource = 'reference';
+        render();
+    }
+});
+
 render();
 if (dataSource === 'loading') refreshRates();

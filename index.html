@@ -12,6 +12,7 @@
     <link rel="dns-prefetch" href="https://open.er-api.com">
     <link rel="stylesheet" href="/src/style.css">
     <script>
+        document.documentElement.dataset.tool = location.pathname.endsWith('/exchange.html') ? 'exchange' : 'value';
         try {
             const theme = localStorage.getItem('theme');
             document.documentElement.classList.toggle('dark', theme === 'dark' || (!theme && matchMedia('(prefers-color-scheme: dark)').matches));
@@ -19,15 +20,15 @@
     </script>
 </head>
 <body class="toolbox-page value-page">
-    <div id="appLoader" class="app-loader" role="status" aria-label="页面加载中"><span class="app-loader__dot" aria-hidden="true"></span></div>
     <div class="page-shell">
         <header class="site-header" id="headerWrap">
-            <a class="brand" href="/" aria-label="VPS 工具箱首页"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-exchange"/></svg></span><span>VPS <span class="brand-light">工具箱</span></span></a>
-            <nav class="tool-nav" aria-label="工具导航"><a href="/" class="active" aria-current="page">剩余价值</a><a href="/exchange.html">汇率换算</a></nav>
+            <a class="brand" href="/" data-tool="value" aria-label="VPS 工具箱首页"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-exchange"/></svg></span><span>VPS <span class="brand-light">工具箱</span></span></a>
+            <nav class="tool-nav" aria-label="工具导航"><a href="/" data-tool="value" class="active" aria-current="page">剩余价值</a><a href="/exchange.html" data-tool="exchange">汇率换算</a></nav>
             <button id="themeToggle" type="button" class="icon-button theme-button" aria-label="切换主题" title="切换深色 / 浅色模式"><svg class="icon theme-sun" aria-hidden="true"><use href="#i-sun"/></svg><svg class="icon theme-moon" aria-hidden="true"><use href="#i-moon"/></svg></button>
         </header>
 
         <main>
+            <section id="valueTool" class="tool-view" aria-label="剩余价值计算器">
             <div class="page-heading">
                 <div class="eyebrow"><span></span> EVERY DAY, WORTH SOMETHING</div>
                 <div class="heading-line"><h1>剩余价值<span class="heading-dot">.</span></h1></div>
@@ -46,6 +47,7 @@
                     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
                     <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
                     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol>
+                    <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M12 10v10"/></symbol>
                     <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18"/></symbol>
                     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
                     <symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01M12 6.5h5M12 17.5h5"/></symbol>
@@ -123,11 +125,16 @@
                 <article><span class="guide-icon"><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg></span><div><h2>一张卡片，分享报价</h2><p>复制完整文字，或生成清晰的交易卡片。</p></div></article>
             </section>
             <div class="calculation-formula"><span>计算方式</span><p>续费价格 <span>÷</span> 周期天数 <span>×</span> 剩余天数 <span>×</span> 汇率 <span>=</span> 剩余价值</p></div>
+            </section>
+            <section id="exchangeTool" class="tool-view" aria-label="汇率换算工具">
+                <!-- exchange-tool-content -->
+            </section>
         </main>
         <footer id="footerWrap" class="site-footer"><span>简单的工具，清楚的数字。</span><div class="footer-project"><a href="https://github.com/senhao-xu/vps-jsq" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg>GitHub<svg class="icon footer-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a><span id="buildSha" class="build-version">dev</span></div></footer>
     </div>
 
     <div id="imageModal" role="dialog" aria-modal="true" aria-label="生成的分享图片" class="image-modal hidden"><div class="image-modal-content"><button id="closeImageModalBtn" type="button" class="close-modal-button" aria-label="关闭预览"><svg class="icon" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></svg></button><div id="modalLoading" class="modal-loading"><span class="app-loader__dot" aria-hidden="true"></span><span>正在生成交易卡片…</span></div><img id="generatedImage" class="generated-image hidden" alt="VPS 剩余价值与交易报价分享卡片"><div id="modalActions" class="modal-actions hidden"><p>长按或右键保存 WebP 图片</p></div></div></div>
-    <script type="module" src="/src/main.js"></script>
+    <div class="exchange-toast" id="exchangeToast" role="status" aria-live="polite"></div>
+    <script type="module" src="/src/toolbox.js"></script>
 </body>
 </html>

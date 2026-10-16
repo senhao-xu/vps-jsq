@@ -1,9 +1,9 @@
 import { enhanceCurrencySelect } from './currency-picker.js';
+import { fetchReferenceRates } from './rate-data.js';
 
 // 样式表已改为 index.html 中 <link rel="stylesheet"> 渲染阻塞式加载（见 head 注释），
 // 不再通过 JS 模块注入，避免 CSS 就绪前内容以默认样式绘制造成闪变。
 
-const API_URL = 'https://open.er-api.com/v6/latest/CNY';
 // 汇率本地缓存时长（小时）。免费 API 一般每天更新一次，12h 足够。
 const RATE_CACHE_HOURS = 12;
 // 用户手动刷新汇率次数上限（每 RATE_CACHE_HOURS 内）。防止误触刷爆免费 API 配额。
@@ -61,42 +61,19 @@ let rateLimitTimer = null;
 let remainingValueCNY = 0;
 let quoteLastEdited = 'premium';
 
-window.addEventListener('DOMContentLoaded', () => {
-    try {
-        initTheme();
-        loadInputsFromCookie(); 
-        initQuoteFields();
-        initDates(); 
-        syncDateDisplay(els.dueDate);
-        syncDateDisplay(els.tradeDate);
-        initRates(); 
-        setupEventListeners();
-        calculate(); 
-    } finally {
-        hideAppLoader();
-    }
-});
-
-function hideAppLoader() {
-    const loader = document.getElementById('appLoader');
-    if (!loader) return;
-
-    let hidden = false;
-    const hide = () => {
-        if (hidden) return;
-        hidden = true;
-        loader.classList.add('is-hidden');
-        window.setTimeout(() => loader.remove(), 180);
-    };
-
-    // 双 rAF：确保加载器至少完整绘制过一帧再开始淡出，
-    // 否则快速刷新时它会在首帧前就被置为隐藏，导致底色闪变。
-    // 后台标签页中 rAF 会被节流甚至不触发，用定时器兜底，避免加载器滞留。
-    requestAnimationFrame(() => {
-        requestAnimationFrame(hide);
-    });
-    window.setTimeout(hide, 1200);
+function initCalculator() {
+    initTheme();
+    loadInputsFromCookie();
+    initQuoteFields();
+    initDates();
+    syncDateDisplay(els.dueDate);
+    syncDateDisplay(els.tradeDate);
+    initRates();
+    setupEventListeners();
+    calculate();
 }
+
+window.addEventListener('toolbox:change', updateCurrencySymbol);
 
 function setupEventListeners() {
     const debouncedSave = debounce(saveInputsToCookie, 500);
@@ -616,33 +593,22 @@ async function manualRefreshRate(isUserClick = true) {
         setCookie(limitKey, JSON.stringify(limitData), Math.max(0.1, hoursLeft));
     }
 
-    await fetchExchangeRate();
+    await fetchExchangeRate(Boolean(isUserClick));
 }
 
-async function fetchExchangeRate() {
+async function fetchExchangeRate(force = false) {
     const base = els.currency.value;
     els.refreshIcon.classList.add('spin');
     els.apiRateDisplay.textContent = "刷新中";
 
     try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        
-        if (data.result === "success") {
-            const baseInCNY = data.rates && data.rates[base];
-            if (typeof baseInCNY === 'number' && baseInCNY > 0 && Number.isFinite(baseInCNY)) {
-                const rate = 1 / baseInCNY;
-                finishRateUpdate(rate, rate.toFixed(4));
-                
-                const cacheData = JSON.stringify({ rate: rate, time: Date.now() });
-                setCookie(`vps_rate_${base}`, cacheData, RATE_CACHE_HOURS);
-                saveInputsToCookie();
-            } else {
-                throw new Error("Invalid rate value");
-            }
-        } else {
-            throw new Error("API Error");
-        }
+        const data = await fetchReferenceRates({ force });
+        if (base !== els.currency.value) return;
+        const rate = 1 / data.rates[base];
+        finishRateUpdate(rate, rate.toFixed(4));
+        const cacheData = JSON.stringify({ rate, time: Date.now() });
+        setCookie(`vps_rate_${base}`, cacheData, RATE_CACHE_HOURS);
+        saveInputsToCookie();
     } catch (error) {
         console.error(error);
         els.apiRateDisplay.textContent = "汇率刷新";
@@ -1022,4 +988,6 @@ if (document.readyState === 'loading') {
     const el = document.getElementById('buildSha');
     if (el) el.textContent = typeof __GIT_SHA__ !== 'undefined' ? __GIT_SHA__ : 'dev';
 })();
+
+initCalculator();
 

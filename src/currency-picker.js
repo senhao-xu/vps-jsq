@@ -154,6 +154,7 @@ export function enhanceCurrencySelect(select) {
 
     trigger.addEventListener('click', () => menu.hidden ? open() : close());
     trigger.addEventListener('blur', close);
+    window.addEventListener('toolbox:change', close);
     select.addEventListener('focus', () => trigger.focus());
     select.addEventListener('change', sync);
     menu.addEventListener('pointerdown', event => event.preventDefault());

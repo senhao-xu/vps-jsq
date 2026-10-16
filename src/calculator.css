@@ -119,8 +119,6 @@
 #toast { position: absolute; left: 50%; bottom: 75px; transform: translate(-50%, 5px); z-index: 4; }
 .amount-copy-tip.show, .rate-limit-tip.show, #toast.show { visibility: visible; opacity: 1; }
 #toast.show { transform: translate(-50%, 0); }
-.app-loader { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; background: var(--background); transition: opacity 120ms, visibility 120ms; }
-.app-loader.is-hidden { visibility: hidden; opacity: 0; pointer-events: none; }
 .app-loader__dot { display: block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: calculator-spin 650ms linear infinite; }
 .spin { animation: calculator-spin 800ms linear infinite; }
 @keyframes calculator-spin { to { transform: rotate(360deg); } }
