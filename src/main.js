@@ -55,7 +55,7 @@ const els = {
     toast: document.getElementById('toast'),
     rateLimitTip: document.getElementById('rateLimitTip'),
     themeToggle: document.getElementById('themeToggle'),
-    themeToggleKnob: document.getElementById('themeToggleKnob')
+    rateCurrencyLabel: document.getElementById('rateCurrencyLabel')
 };
 
 let rateLimitTimer = null;
@@ -305,29 +305,21 @@ function debounce(func, wait) {
 }
 
 function initTheme() {
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-        updateToggleUI(true);
-    } else {
-        document.documentElement.classList.remove('dark');
-        updateToggleUI(false);
-    }
+    let savedTheme;
+    try { savedTheme = localStorage.getItem('theme'); } catch {}
+    const isDark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.toggle('dark', isDark);
+    updateToggleUI(isDark);
 }
 
 function toggleTheme() {
     const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.theme = isDark ? 'dark' : 'light';
+    try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch {}
     updateToggleUI(isDark);
 }
 
 function updateToggleUI(isDark) {
-    if (isDark) {
-        els.themeToggleKnob.classList.add('translate-x-6');
-        els.themeToggleKnob.classList.remove('translate-x-1');
-    } else {
-        els.themeToggleKnob.classList.remove('translate-x-6');
-        els.themeToggleKnob.classList.add('translate-x-1');
-    }
+    els.themeToggle.setAttribute('aria-label', isDark ? '切换到浅色模式' : '切换到深色模式');
 }
 
 // 注意：函数名沿用历史命名（setCookie / getCookie），实际底层是 localStorage + 过期时间，
@@ -756,6 +748,7 @@ function updateCurrencySymbol() {
     const code = els.currency.value;
     const sym = currencySymbols[code] || code;
     els.symbolDisplay.textContent = sym;
+    if (els.rateCurrencyLabel) els.rateCurrencyLabel.textContent = `1 ${code} =`;
     // Dynamically adjust input left padding to prevent symbol/text overlap
     requestAnimationFrame(() => {
         const symRect = els.symbolDisplay.getBoundingClientRect();
@@ -835,6 +828,7 @@ function setFinalValueDisplay(value) {
     const numericLength = value.replace(/[^0-9]/g, '').length;
     const isLongValue = numericLength >= 7;
     els.finalValue.classList.toggle('final-value-long', isLongValue);
+    els.finalValue.classList.toggle('final-value-very-long', numericLength > 10);
     els.finalValue.closest('.result-amount-row')?.classList.toggle('final-value-row-long', isLongValue);
 }
 

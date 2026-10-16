@@ -1,0 +1,223 @@
+/* The calculator uses the same surfaces and spacing as the currency converter. */
+.hidden { display: none !important; }
+#captureRoot { position: relative; width: 100%; }
+.value-calculator { display: grid; grid-template-columns: 1.12fr 1fr; position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); }
+.value-calculator::before { content: ""; position: absolute; height: 1px; top: 0; left: 10%; right: 10%; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.4; }
+.calculator-inputs { padding: 29px 30px 21px; min-width: 0; }
+.calculator-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.calculator-field { min-width: 0; }
+.field-label-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.field-label-row .field-label { margin-bottom: 0; }
+#priceCNYPreview { color: var(--muted); font-size: 9px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.calc-control { width: 100%; height: 51px; padding: 0 13px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-raised); color: var(--text); font-size: 13px; font-variant-numeric: tabular-nums; transition: border-color 150ms, box-shadow 150ms; }
+.calc-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); outline: none; }
+.calc-control::placeholder { color: var(--muted); font-weight: 400; }
+.price-control { position: relative; }
+.symbol-display { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 20px; color: var(--muted); pointer-events: none; z-index: 1; font-variant-numeric: tabular-nums; }
+.renewal-price-input { padding-left: 36px; font-size: 24px; font-weight: 550; letter-spacing: 0.2px; }
+.renewal-currency-select { position: relative; }
+.renewal-currency-select > .icon:first-child { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; pointer-events: none; z-index: 1; color: var(--accent); }
+.renewal-currency-select select { padding-left: 37px; padding-right: 25px; font-size: 12px; appearance: none; cursor: pointer; }
+.renewal-currency-select select option { background: var(--surface-raised); color: var(--text); }
+.renewal-currency-select .select-chevron { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); height: 15px; width: 15px; pointer-events: none; color: var(--muted); }
+.cycle-fieldset { margin: 23px 0; padding: 0; border: 0; min-width: 0; }
+.cycle-fieldset legend { padding: 0; width: 100%; }
+.cycle-options { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }
+.cycle-options label { position: relative; cursor: pointer; }
+.cycle-option { display: flex; align-items: center; justify-content: center; height: 36px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface-raised); color: var(--secondary); font-size: 11px; transition: color 150ms, border-color 150ms, background 150ms; }
+.cycle-option:hover { border-color: var(--accent); }
+.cycle-radio:checked + .cycle-option { color: var(--accent-strong); background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
+.cycle-radio:focus-visible + .cycle-option { outline: 2px solid var(--accent); outline-offset: 3px; }
+.date-input-wrapper { position: relative; cursor: pointer; }
+.date-native-input { width: 100%; height: 46px; opacity: 0; position: relative; z-index: 2; cursor: pointer; padding: 0; border: 0; }
+.date-native-input::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; margin: 0; cursor: pointer; }
+.date-display-value { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-raised); color: var(--text); padding: 0 35px 0 13px; white-space: nowrap; font-size: 12px; font-variant-numeric: tabular-nums; pointer-events: none; }
+.date-input-wrapper:focus-within .date-display-value { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.date-input-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); z-index: 3; display: flex; align-items: center; color: var(--muted); }
+.date-input-icon .icon { width: 15px; height: 15px; }
+.calculator-rate-section { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 20px 0; margin-top: 24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.calculator-rate-label { display: flex; flex-direction: column; gap: 6px; }
+.calculator-rate-label label { color: var(--secondary); font-size: 12px; cursor: text; }
+.calculator-rate-label > span { color: var(--muted); font-size: 9px; }
+.calculator-rate-control { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rate-input { width: 81px; height: 33px; padding: 0 6px; background: var(--surface-raised); border: 1px solid var(--border); border-radius: 6px; color: var(--accent-strong); font-size: 13px; font-weight: 550; text-align: center; font-variant-numeric: tabular-nums; }
+.rate-input:focus { border-color: var(--accent); }
+.calculator-source-row { padding-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.rate-source-link { display: flex; align-items: center; gap: 5px; font-size: 9px; color: var(--muted); }
+.rate-source-link:hover { color: var(--accent); }
+.source-dot { width: 5px; height: 5px; background: var(--muted); border-radius: 50%; margin-right: 1px; }
+.rate-source-link .icon { width: 10px; height: 10px; transform: rotate(-45deg); }
+.refresh-control { position: relative; }
+.text-button { display: flex; align-items: center; gap: 5px; background: transparent; color: var(--secondary); font-size: 10px; padding: 0; }
+.text-button:hover { color: var(--accent); }
+.text-button .icon { width: 12px; height: 12px; }
+.calculator-result { min-width: 0; padding: 29px 31px 20px; background: radial-gradient(ellipse at 90% 2%, var(--accent-soft), transparent 75%), var(--result-bg); border-left: 1px solid var(--border); display: flex; flex-direction: column; position: relative; }
+.result-summary { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.result-topline h2 { font-size: inherit; font-weight: 400; margin: 0; }
+.value-caption { font-size: 11px; color: var(--muted); margin: 28px 0 8px; }
+.result-amount-row { display: flex; align-items: baseline; gap: 9px; min-width: 0; }
+.value-symbol { font-size: 26px; color: var(--accent); font-weight: 350; }
+#finalValue { font-size: 58px; font-weight: 600; line-height: 1.2; letter-spacing: -1.8px; color: var(--result-text); font-variant-numeric: tabular-nums; cursor: pointer; min-width: 0; overflow-wrap: anywhere; }
+#finalValue.final-value-long { font-size: 42px; letter-spacing: -1px; }
+#finalValue.final-value-very-long { font-size: 28px; letter-spacing: -0.7px; }
+.amount-copy-row { display: flex; align-items: center; position: relative; min-height: 16px; margin-top: 10px; }
+#originalCurrencyValue { font-size: 11px; color: var(--secondary); font-variant-numeric: tabular-nums; }
+.total-value-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 19px; color: var(--muted); font-size: 10px; }
+#totalValue { color: var(--secondary); font-size: 12px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.result-divider { height: 1px; background: var(--border); margin: 22px 0; }
+.days-progress-row { display: flex; align-items: center; gap: 9px; font-size: 11px; }
+.days-label { display: flex; align-items: center; gap: 6px; color: var(--secondary); }
+.days-label .icon { width: 14px; height: 14px; color: var(--accent); }
+.days-count-line { display: inline-flex; align-items: baseline; gap: 4px; font-variant-numeric: tabular-nums; }
+#daysRemaining { color: var(--text); font-size: 15px; font-weight: 550; }
+.days-count-line > span:last-child { color: var(--muted); font-size: 10px; }
+.progress-label { margin-left: auto; color: var(--muted); font-size: 10px; }
+#progressText { color: var(--accent); font-variant-numeric: tabular-nums; }
+.progress-container { height: 4px; background: var(--border); border-radius: 5px; overflow: hidden; margin-top: 13px; }
+.progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, #9661d2, #c8a0f3); border-radius: inherit; transition: width 400ms ease; }
+.quote-panel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-bottom: 23px; }
+.quote-heading { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; gap: 6px; color: var(--secondary); font-size: 11px; }
+.quote-heading > span:last-child { color: var(--muted); font-size: 9px; }
+.quote-field { min-width: 0; }
+.quote-label { display: block; color: var(--muted); font-size: 10px; margin-bottom: 9px; }
+.quote-input-wrap { position: relative; }
+.quote-prefix { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 12px; pointer-events: none; }
+.quote-input { width: 100%; height: 37px; background: var(--surface-raised); border: 1px solid var(--border); border-radius: 7px; padding: 0 10px 0 25px; font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; outline: none; }
+.quote-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); outline: none; }
+.quote-input::placeholder { color: var(--muted); font-weight: 400; }
+.quote-premium-input.premium-positive { color: var(--green); }
+.quote-premium-input.premium-negative { color: #db6884; }
+.quote-premium-input.premium-neutral { color: var(--secondary); }
+.quote-sale-input { color: var(--accent-strong); }
+.quote-sale-input.sale-neutral { color: var(--secondary); }
+.calculator-actions { display: grid; grid-template-columns: 1fr 1.15fr; gap: 10px; margin-top: auto; }
+.action-btn { min-height: 41px; padding: 0 10px; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; border: 1px solid var(--border); border-radius: 8px; color: var(--secondary); background: var(--surface-raised); transition: background 150ms, border-color 150ms, color 150ms; }
+.action-btn .icon { width: 14px; height: 14px; }
+.action-btn-copy:hover { color: var(--accent-strong); border-color: var(--accent); }
+.action-btn-image { background: #935dd0; color: #fff; border-color: transparent; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12); }
+.action-btn-image:hover { background: #a36ae2; }
+.btn-copied { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-strong); }
+.calculator-result-note { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 9px; color: var(--muted); margin: 12px 0 0; }
+.calculator-result-note .icon { width: 11px; height: 11px; color: var(--accent); }
+.calculator-guide { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; margin-top: 26px; }
+.calculator-guide article { display: flex; align-items: flex-start; gap: 11px; padding: 21px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.guide-icon { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; flex-shrink: 0; background: var(--accent-soft); border-radius: 8px; color: var(--accent); }
+.guide-icon .icon { width: 15px; height: 15px; }
+.calculator-guide h2 { font-size: 12px; color: var(--secondary); font-weight: 500; margin: 1px 0 9px; }
+.calculator-guide p { color: var(--muted); font-size: 10px; line-height: 1.8; margin: 0; }
+.calculation-formula { margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 16px; padding: 17px 12px; color: var(--muted); font-size: 10px; border: 1px dashed var(--border); border-radius: 8px; }
+.calculation-formula > span { color: var(--secondary); }
+.calculation-formula p { margin: 0; line-height: 1.8; }
+.calculation-formula p span { color: var(--accent); margin: 0 6px; }
+.footer-project { display: flex; align-items: center; gap: 14px; }
+.build-version { font-size: 9px; opacity: 0.7; font-variant-numeric: tabular-nums; }
+.input-invalid { border-color: #db6884 !important; box-shadow: 0 0 0 2px rgba(219, 104, 132, 0.12) !important; }
+.amount-copy-tip, .rate-limit-tip, #toast { visibility: hidden; opacity: 0; pointer-events: none; transition: opacity 150ms, visibility 150ms, transform 150ms; background: var(--surface-raised); color: var(--text); border: 1px solid var(--border); padding: 7px 10px; font-size: 10px; border-radius: 6px; box-shadow: var(--shadow); white-space: nowrap; }
+.amount-copy-tip { position: absolute; left: 120px; top: -5px; }
+.rate-limit-tip { position: absolute; right: 0; bottom: 25px; }
+#toast { position: absolute; left: 50%; bottom: 75px; transform: translate(-50%, 5px); z-index: 4; }
+.amount-copy-tip.show, .rate-limit-tip.show, #toast.show { visibility: visible; opacity: 1; }
+#toast.show { transform: translate(-50%, 0); }
+.app-loader { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; background: var(--background); transition: opacity 120ms, visibility 120ms; }
+.app-loader.is-hidden { visibility: hidden; opacity: 0; pointer-events: none; }
+.app-loader__dot { display: block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: calculator-spin 650ms linear infinite; }
+.spin { animation: calculator-spin 800ms linear infinite; }
+@keyframes calculator-spin { to { transform: rotate(360deg); } }
+.image-modal { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(12, 8, 19, 0.87); backdrop-filter: blur(12px); padding: 62px 24px 30px; opacity: 0; transition: opacity 200ms; }
+.image-modal.opacity-100 { opacity: 1; }
+.image-modal-content { position: relative; width: 100%; max-width: 1000px; max-height: 100%; display: flex; align-items: center; flex-direction: column; }
+.close-modal-button { width: 35px; height: 35px; position: absolute; right: 0; top: -46px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 9px; background: rgba(255, 255, 255, 0.05); color: #fff; display: grid; place-items: center; }
+.close-modal-button:hover { background: rgba(255, 255, 255, 0.12); }
+.modal-loading { display: flex; flex-direction: column; align-items: center; gap: 15px; color: #e6dbf3; font-size: 13px; padding: 35px; }
+.generated-image { max-width: 100%; max-height: calc(100vh - 150px); width: auto; height: auto; object-fit: contain; border-radius: 13px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); }
+.modal-actions { color: #b7a9c5; font-size: 11px; margin-top: 16px; }
+.modal-actions p { margin: 0; }
+
+/* Export the working calculator as a compact, opaque card. */
+#captureRoot.exporting { padding: 24px; background: var(--background); }
+#mainCard.exporting { transition: none !important; box-shadow: none; z-index: 1; background: var(--surface-raised); }
+#mainCard.exporting .calculator-inputs { background: var(--surface-subtle); }
+#mainCard.exporting .calculator-result { background: var(--result-bg); }
+#mainCard.exporting #btnContainer, #mainCard.exporting .calculator-result-note { display: none; }
+#mainCard.exporting.quote-export-empty .quote-panel, #mainCard.exporting.quote-export-empty .quote-divider { display: none; }
+#mainCard.exporting .calculator-source-row, #mainCard.exporting .section-caption, #mainCard.exporting .calculator-rate-label > span { display: none; }
+#mainCard.exporting .value-caption { display: none; }
+#mainCard.exporting .result-amount-row { margin-top: 20px; }
+#mainCard.exporting .quote-panel { padding-bottom: 0; }
+#mainCard.exporting .cycle-option, #mainCard.exporting .progress-fill { transition: none; }
+.export-card-shadow { position: absolute; z-index: 0; pointer-events: none; background-repeat: no-repeat; background-position: center; background-size: 100% 100%; }
+.date-display-value.date-display-export { background: var(--surface-raised); }
+
+@media (max-width: 900px) {
+    .calculator-inputs { padding: 25px 23px 20px; }
+    .calculator-result { padding: 25px 24px 20px; }
+    .calculator-fields { gap: 11px; }
+    .calculator-fields .field-label > span { display: none; }
+    .renewal-currency-select select { font-size: 11px; padding-left: 32px; }
+    .renewal-currency-select > .icon:first-child { width: 15px; height: 15px; left: 10px; }
+    .cycle-options { gap: 5px; }
+    .cycle-option { font-size: 10px; }
+    .date-display-value { padding-left: 10px; padding-right: 28px; font-size: 11px; }
+    .date-input-icon { right: 9px; }
+    .date-input-icon .icon { width: 13px; height: 13px; }
+    #priceCNYPreview { font-size: 8px; }
+    .calculator-rate-control { gap: 5px; font-size: 9px; }
+    .rate-input { width: 67px; font-size: 12px; }
+    .calculator-rate-label label { font-size: 11px; }
+    .calculator-rate-label > span { font-size: 8px; }
+    .calculator-guide article { padding: 17px 13px; gap: 9px; }
+    .calculator-guide h2 { font-size: 11px; }
+    .calculator-guide p { font-size: 9px; }
+    .calculator-guide .guide-icon { width: 26px; height: 26px; }
+    #finalValue { font-size: 49px; }
+    #finalValue.final-value-long { font-size: 35px; }
+    #finalValue.final-value-very-long { font-size: 25px; }
+}
+@media (max-width: 650px) {
+    .value-calculator { grid-template-columns: 1fr; border-radius: 14px; }
+    .calculator-inputs { padding: 23px 21px 19px; }
+    .calculator-inputs .section-label { margin-bottom: 22px; }
+    .calculator-fields { gap: 13px; }
+    .calc-control { height: 49px; }
+    .renewal-currency-select select { font-size: 12px; padding-left: 34px; }
+    .calculator-rate-label > span { font-size: 9px; }
+    .calculator-rate-control { font-size: 10px; gap: 7px; }
+    .rate-input { width: 76px; font-size: 13px; }
+    .calculator-rate-section { margin-top: 21px; padding: 18px 0; }
+    .calculator-source-row { padding-top: 16px; }
+    .calculator-result { border-top: 1px solid var(--border); border-left: 0; padding: 23px 23px 20px; }
+    .value-caption { margin-top: 25px; }
+    #finalValue { font-size: 52px; }
+    #finalValue.final-value-long { font-size: 38px; }
+    #finalValue.final-value-very-long { font-size: 27px; }
+    .result-divider { margin: 21px 0; }
+    .quote-panel { gap: 12px; }
+    .calculator-guide { grid-template-columns: 1fr; gap: 9px; margin-top: 22px; }
+    .calculator-guide article { align-items: center; padding: 15px 17px; gap: 12px; }
+    .calculator-guide h2 { font-size: 12px; margin: 0 0 5px; }
+    .calculator-guide p { font-size: 10px; }
+    .calculator-guide .guide-icon { width: 31px; height: 31px; }
+    .calculation-formula { flex-direction: column; gap: 7px; padding: 14px 8px; margin-top: 16px; text-align: center; font-size: 9px; }
+    .calculation-formula p span { margin: 0 3px; }
+    .build-version { display: none; }
+    #captureRoot.exporting { padding: 14px; }
+    #mainCard.exporting .calculator-inputs, #mainCard.exporting .calculator-result { padding-left: 18px; padding-right: 18px; }
+    #mainCard.exporting .calculator-rate-control { font-size: 9px; gap: 5px; }
+    #mainCard.exporting .rate-input { width: 64px; }
+    #mainCard.exporting .renewal-currency-select select { font-size: 11px; padding-left: 29px; padding-right: 17px; }
+    #mainCard.exporting #priceCNYPreview { display: none; }
+}
+@media (max-width: 370px) {
+    .calculator-inputs { padding: 21px 17px 18px; }
+    .calculator-result { padding-left: 19px; padding-right: 19px; }
+    .cycle-options { gap: 4px; }
+    .cycle-option { font-size: 9px; }
+    .calculator-fields { gap: 10px; }
+    .renewal-currency-select select { font-size: 11px; padding-left: 30px; }
+    .renewal-currency-select > .icon:first-child { width: 14px; height: 14px; left: 9px; }
+    .calculator-rate-label > span { font-size: 8px; }
+    .calculator-rate-control { font-size: 9px; gap: 5px; }
+    .rate-input { width: 65px; }
+    #priceCNYPreview { font-size: 7px; }
+    .calculation-formula p span { margin: 0 1px; }
+}
