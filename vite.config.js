@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const shellPath = fileURLToPath(new URL('./index.html', import.meta.url));
 const exchangeViewPath = fileURLToPath(new URL('./src/views/exchange.html', import.meta.url));
+const isWindowsMount = process.platform === 'linux' && /^\/mnt\/[a-z]\//i.test(shellPath);
 
 // 构建版本：优先取环境变量（CI / Docker 构建注入），否则回退本地 git 短 sha
 const gitSha = process.env.VITE_GIT_SHA || (() => {
@@ -41,6 +42,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    // Windows drive edits can miss filesystem events in WSL, leaving imported CSS cached.
+    watch: isWindowsMount ? { usePolling: true, interval: 200 } : undefined,
   },
   build: {
     outDir: 'dist',
