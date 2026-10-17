@@ -14,14 +14,14 @@
 .amount-presets > span { color: var(--muted); font-size: 12px; margin-right: 3px; }
 .amount-presets button { padding: 4px 10px; border-radius: 5px; font-size: 13px; font-variant-numeric: lining-nums tabular-nums; color: var(--secondary); background: var(--surface-subtle); border: 1px solid transparent; font-weight: 500; }
 .amount-presets button:hover, .amount-presets button.selected { color: var(--accent-strong); background: var(--accent-soft); border-color: var(--border); }
-.currency-fields { display: grid; grid-template-columns: minmax(0, 1fr) 31px minmax(0, 1fr); gap: 10px; align-items: end; }
-.currency-select { position: relative; display: flex; align-items: center; height: 47px; background: var(--surface-raised); border: 1px solid var(--border); border-radius: 8px; }
+.currency-fields { --currency-control-height: 47px; --currency-swap-size: 31px; display: grid; grid-template-columns: minmax(0, 1fr) var(--currency-swap-size) minmax(0, 1fr); gap: 10px; align-items: end; }
+.currency-select { position: relative; display: flex; align-items: center; height: var(--currency-control-height); background: var(--surface-raised); border: 1px solid var(--border); border-radius: 8px; }
 .currency-select:focus-within { border-color: var(--accent); }
 .currency-flag { position: absolute; left: 11px; font-size: 20px; pointer-events: none; line-height: 1; }
 .currency-select select { position: relative; width: 100%; height: 100%; padding: 0 25px 0 40px; appearance: none; background: transparent; border: 0; outline: 0; font-size: 14px; cursor: pointer; }
 .currency-select select option { background: var(--surface-raised); color: var(--text); }
 .select-chevron { position: absolute; right: 7px; width: 15px; height: 15px; pointer-events: none; color: var(--muted); }
-.swap-button { width: 31px; height: 31px; border: 1px solid var(--border); border-radius: 50%; background: var(--surface-subtle); color: var(--accent); margin-bottom: 8px; transition: transform 200ms, background 200ms; }
+.swap-button { display: grid; place-items: center; width: var(--currency-swap-size); height: var(--currency-swap-size); padding: 0; border: 1px solid var(--border); border-radius: 50%; background: var(--surface-subtle); color: var(--accent); margin-bottom: calc((var(--currency-control-height) - var(--currency-swap-size)) / 2); transition: transform 200ms, background 200ms; }
 .swap-button .icon { width: 15px; height: 15px; }
 .swap-button:hover { transform: rotate(180deg); background: var(--accent-soft); }
 .custom-rate-section { padding: 21px 0; margin-top: 23px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
@@ -91,10 +91,9 @@
     .converter-inputs { padding: 25px 23px 20px; }
     .converter-result { padding: 25px 24px 20px; }
     .custom-hint { display: block; margin: 5px 0 0; }
-    .currency-fields { gap: 6px; grid-template-columns: minmax(0, 1fr) 27px minmax(0, 1fr); }
+    .currency-fields { --currency-swap-size: 27px; gap: 6px; }
     .currency-select select { font-size: 14px; padding-left: 34px; padding-right: 19px; }
     .currency-flag { left: 8px; font-size: 18px; }
-    .swap-button { width: 27px; height: 27px; margin-bottom: 10px; }
     .result-number-line output { font-size: 49px; }
     .popular-pair { padding: 14px 12px; }
 }
@@ -103,10 +102,9 @@
     .converter-inputs { padding: 23px 21px 19px; }
     .section-label { margin-bottom: 22px; }
     .amount-field { height: 61px; }
-    .currency-fields { gap: 9px; grid-template-columns: minmax(0, 1fr) 29px minmax(0, 1fr); }
+    .currency-fields { --currency-swap-size: 29px; gap: 9px; }
     .currency-select select { font-size: 14px; padding-left: 37px; }
     .currency-flag { left: 10px; }
-    .swap-button { width: 29px; height: 29px; margin-bottom: 9px; }
     .amount-presets { margin-bottom: 22px; }
     .custom-rate-section { margin-top: 20px; padding: 17px 0; }
     .custom-hint { display: inline; margin-left: 10px; }

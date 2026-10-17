@@ -49,9 +49,9 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     #mainCard .result-divider { display: none; }
     #mainCard .result-days-panel { grid-column: 2; grid-row: 2 / 4; align-self: center; padding-left: 18px; border-left: 1px solid var(--border); }
     #mainCard .days-progress-row { flex-wrap: wrap; gap: 6px; }
-    #mainCard .days-label { width: 100%; font-size: 12px; }
+    #mainCard .days-label { width: 100%; font-size: 14px; font-weight: 500; }
     #mainCard #daysRemaining { font-size: 25px; }
-    #mainCard .progress-label { font-size: 12px; }
+    #mainCard .progress-label { font-size: 13px; font-weight: 500; }
     .progress-container { margin-top: 8px; }
     #mainCard .quote-card { padding: 20px 24px; background: var(--surface); }
     .quote-panel { gap: 10px; padding-bottom: 16px; }
@@ -76,7 +76,9 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .amount-field { height: 58px; }
     .amount-field input { font-size: 30px; }
     .amount-presets { margin: 10px 0 20px; }
-    .currency-select { height: 44px; }
+    .currency-fields { --currency-control-height: 44px; }
+    .currency-flag { font-size: 14px; line-height: 1.6; }
+    .currency-select .currency-picker-code { font-size: 14px; }
     .custom-rate-section { margin-top: 20px; padding: 14px 0; }
     .custom-rate-panel { margin-top: 12px; }
     .rate-source-row { padding-top: 14px; }
@@ -87,7 +89,7 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .rate-detail > div { margin-bottom: 8px; }
     .result-footnote { margin-top: 10px; }
     .exchange-overview { display: grid; grid-template-columns: 1fr 1.25fr; gap: 20px; margin-top: 20px; }
-    .popular-section, .quick-reference { margin-top: 0; }
+    .popular-section, .quick-reference { display: grid; grid-template-rows: auto 1fr; min-width: 0; margin-top: 0; }
     .subsection-heading { margin-bottom: 10px; }
     .popular-currencies { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .popular-pair { padding: 11px 12px; gap: 8px; flex-direction: row; align-items: center; justify-content: space-between; }
@@ -95,6 +97,7 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     .pair-flag { font-size: 15px; }
     .pair-value { font-size: 16px; letter-spacing: 0; white-space: nowrap; }
     .pair-value > small { display: none; }
+    .reference-table { height: 100%; }
     .reference-table th { padding: 11px 8px; }
     .reference-table td { padding: 12px 8px; font-size: 13px; }
     .rate-note { margin-top: 12px; line-height: 1.6; }
@@ -117,7 +120,7 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     #exchangeTool .section-label { margin-bottom: 14px; padding-bottom: 10px; }
     .amount-field { height: 52px; }
     .amount-presets { margin: 8px 0 14px; }
-    .currency-select { height: 42px; }
+    .currency-fields { --currency-control-height: 42px; }
     .custom-rate-section { margin-top: 14px; padding: 10px 0; }
     .custom-rate-panel { margin-top: 8px; }
     .rate-source-row { padding-top: 12px; }
@@ -135,7 +138,6 @@ html:not([data-tool="exchange"]) #exchangeTool { display: none; }
     #mainCard, .converter-card { gap: 14px; }
     #mainCard .result-summary { gap: 0 12px; }
     #mainCard .result-days-panel { padding-left: 12px; }
-    #mainCard .days-label { font-size: 12px; }
     #mainCard .progress-label { width: 100%; margin: 0; }
     .exchange-overview { gap: 14px; }
     .pair-heading { gap: 3px; }
